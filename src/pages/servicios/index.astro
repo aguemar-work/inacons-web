@@ -1,0 +1,123 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+type Servicio = CollectionEntry<'servicios'>;
+
+const servicios = await getCollection('servicios');
+servicios.sort((a: Servicio, b: Servicio) =>
+  (a.data.orden ?? 99) - (b.data.orden ?? 99)
+);
+---
+
+<BaseLayout titulo="Servicios">
+
+  <section class="sec sec--muted">
+    <div class="container">
+
+      <div class="sh sh--center sh--medium">
+        <p class="sh-label">Lo que hacemos</p>
+        <h1 class="sh-title">Nuestras Operaciones</h1>
+        <p class="sh-desc">
+          Soluciones integrales en ingeniería y construcción para los sectores
+          público y privado a nivel nacional.
+        </p>
+      </div>
+
+      <div class="services-grid">
+        {servicios.map((servicio: Servicio) => (
+          <a href={`/servicios/${servicio.id}`} class="service-item">
+            <div class="service-img">
+              <img src={servicio.data.imagen} alt={servicio.data.titulo} loading="lazy" />
+            </div>
+            <div class="service-info">
+              <h2>{servicio.data.titulo}</h2>
+              <p>{servicio.data.descripcion}</p>
+              <span class="btn btn-outline btn-sm">
+                Ver más <i data-lucide="arrow-right" style={{ width: "14px", height: "14px" }}></i>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 3px;
+  }
+
+  .service-item {
+    position: relative;
+    height: 420px;
+    overflow: hidden;
+    text-decoration: none;
+    display: block;
+  }
+
+  .service-img {
+    position: absolute;
+    inset: 0;
+  }
+
+  .service-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+
+  .service-item:hover .service-img img {
+    transform: scale(1.05);
+  }
+
+  .service-img::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      to bottom,
+      rgba(20,23,45,0.2) 0%,
+      rgba(20,23,45,0.88) 100%
+    );
+  }
+
+  .service-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 32px 28px;
+    z-index: 2;
+  }
+
+  .service-info h2 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 10px;
+  }
+
+  .service-info p {
+    font-size: 0.88rem;
+    color: rgba(255,255,255,0.72);
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  @media (max-width: 1023px) {
+    .services-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 640px) {
+    .services-grid { grid-template-columns: 1fr; }
+    .service-item  { height: 320px; }
+  }
+</style>

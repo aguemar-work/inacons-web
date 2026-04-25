@@ -1,0 +1,273 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+type Servicio = CollectionEntry<'servicios'>;
+
+export async function getStaticPaths() {
+  const servicios = await getCollection('servicios');
+  return servicios.map((servicio: Servicio) => ({
+    params: { slug: servicio.id },
+    props:  { servicio },
+  }));
+}
+
+interface Props {
+  servicio: Servicio;
+
+}
+
+const { servicio } = Astro.props;
+const { Content } = await render(servicio);
+const { titulo, descripcion, imagen, especialidades } = servicio.data;
+
+const todosServicios = await getCollection('servicios');
+const otrosServicios = todosServicios
+  .filter((s: Servicio) => s.id !== servicio.id)
+  .sort((a: Servicio, b: Servicio) => (a.data.orden ?? 99) - (b.data.orden ?? 99));
+---
+
+<BaseLayout titulo={titulo} descripcion={descripcion}>
+
+  <!-- HERO -->
+  <section class="page-hero">
+    <div class="page-hero-bg" style={`background-image: url('${imagen}')`}></div>
+    <div class="page-hero-overlay"></div>
+    <div class="page-hero-content">
+      <nav class="breadcrumb" aria-label="Breadcrumb">
+        <a href="/">Inicio</a>
+        <span class="breadcrumb-sep">›</span>
+        <a href="/servicios">Operaciones</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-current">{titulo}</span>
+      </nav>
+      <h1 class="page-hero-title">{titulo}</h1>
+      <p class="page-hero-subtitle">{descripcion}</p>
+    </div>
+  </section>
+
+  <!-- CONTENIDO -->
+  <section class="sec sec--white">
+    <div class="container">
+      <div class="service-layout">
+
+        <!-- Columna principal -->
+        <div class="service-body" data-aos="fade-up">
+          <Content />
+
+          {especialidades && especialidades.length > 0 && (
+            <>
+              <h2>Nos especializamos en:</h2>
+              <ul>
+                {especialidades.map((e: string) => <li>{e}</li>)}
+              </ul>
+            </>
+          )}
+
+          <a href="/contacto" class="btn btn-primary">
+            Solicitar cotización
+            <i data-lucide="arrow-right" style={{ width: "15px", height: "15px" }}></i>
+          </a>
+        </div>
+
+        <!-- Aside -->
+        <aside class="service-aside">
+          <div class="aside-card">
+            <p class="aside-card-title">Descargas</p>
+            <div class="download-list">
+              <a href="/brochure_inacons.pdf" target="_blank" class="download-item">
+                <i data-lucide="file-text" style={{ width: "18px", height: "18px" }}></i>
+                Brochure General
+              </a>
+            </div>
+          </div>
+
+          <div class="aside-card">
+            <p class="aside-card-title">Otros servicios</p>
+            <nav class="other-services">
+              {otrosServicios.map((s: Servicio) => (
+                <a href={`/servicios/${s.id}`} class="other-service-link">
+                  {s.data.titulo}
+                  <i data-lucide="chevron-right" style={{ width: "14px", height: "14px" }}></i>
+                </a>
+              ))}
+            </nav>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="sec sec--dark">
+    <div class="container">
+      <div class="sh sh--center sh--medium">
+        <p class="sh-label">¿Listo para iniciar?</p>
+        <h2 class="sh-title">¿Tienes un proyecto de {titulo}?</h2>
+        <p class="sh-desc">
+          Nuestro equipo técnico está disponible para asesorarte
+          y presentarte una propuesta sin compromiso.
+        </p>
+      </div>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:36px;">
+        <a href="/contacto" class="btn btn-primary btn-lg">
+          Contactar ahora
+          <i data-lucide="send" style={{ width: "15px", height: "15px" }}></i>
+        </a>
+        <a href="/proyectos" class="btn btn-outline-light btn-lg">
+          Ver proyectos
+          <i data-lucide="arrow-right" style={{ width: "14px", height: "14px" }}></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style>
+  .service-layout {
+    display: grid;
+    grid-template-columns: 1fr 320px;
+    gap: 64px;
+    align-items: start;
+  }
+
+  .service-body h2 {
+    font-size: clamp(1.3rem, 2.2vw, 1.7rem);
+    font-weight: 700;
+    color: var(--c-text-heading);
+    margin-bottom: 18px;
+    margin-top: 32px;
+  }
+
+  .service-body p {
+    font-size: 0.975rem;
+    line-height: 1.85;
+    color: var(--c-text-body);
+    margin-bottom: 20px;
+  }
+
+  .service-body ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 28px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 24px;
+  }
+
+  .service-body ul li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.90rem;
+    color: var(--c-text-body);
+    line-height: 1.5;
+  }
+
+  .service-body ul li::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--c-secondary);
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 7px;
+  }
+
+  .service-aside {
+    position: sticky;
+    top: 100px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .aside-card {
+    background: var(--c-bg-white);
+    border: 1px solid var(--c-border-light);
+    padding: 32px 28px;
+    position: relative;
+  }
+
+  .aside-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 3px; height: 100%;
+    background: var(--c-secondary);
+  }
+
+  .aside-card-title {
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--c-text-muted);
+    margin-bottom: 20px;
+  }
+
+  .download-list { display: flex; flex-direction: column; gap: 10px; }
+
+  .download-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 13px 16px;
+    background: var(--c-bg-muted);
+    border: 1.5px solid var(--c-border-light);
+    border-radius: var(--radius);
+    text-decoration: none;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--c-text-heading);
+    transition: border-color var(--t), background var(--t);
+  }
+
+  .download-item:hover {
+    border-color: var(--c-secondary);
+    background: rgba(27,82,120,0.05);
+    color: var(--c-secondary);
+  }
+
+  .other-services { display: flex; flex-direction: column; }
+
+  .other-service-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 4px;
+    font-size: 0.88rem;
+    font-weight: 500;
+    color: var(--c-text-body);
+    text-decoration: none;
+    border-bottom: 1px solid var(--c-border-light);
+    transition: color var(--t), padding-left var(--t);
+  }
+
+  .other-service-link:last-child { border-bottom: none; }
+
+  .other-service-link:hover {
+    color: var(--c-secondary);
+    padding-left: 6px;
+  }
+
+  @media (max-width: 1023px) {
+    .service-layout {
+      grid-template-columns: 1fr;
+      gap: 48px;
+    }
+    .service-aside {
+      position: static;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .service-aside { grid-template-columns: 1fr; }
+    .service-body ul { grid-template-columns: 1fr; }
+  }
+</style>

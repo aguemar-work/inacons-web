@@ -1,0 +1,184 @@
+---
+interface Props {
+    titulo?: string;
+    title?: string;
+    description?: string;
+    descripcion?: string;
+}
+
+const {
+  titulo,
+  title,
+  description,
+  descripcion,
+} = Astro.props;
+
+const pageTitle = titulo ?? title ?? 'INACONS';
+const metaDescription = description ?? descripcion ?? 'INACONS - Ingeniería y Construcción';
+---
+
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={metaDescription} />
+    <title>{pageTitle} — INACONS</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Vendors -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css" />
+
+    <!-- Design System INACONS v3.0 -->
+    <link rel="stylesheet" href="/assets/css/design-system.css">
+  </head>
+  <body>
+
+    <!-- TOP BAR -->
+    <div class="top-bar">
+      <div class="container">
+        <div class="top-bar-left">
+          <div class="top-bar-contact">
+            <i data-lucide="mail" style={{ width: "14px", height: "14px" }}></i>
+            <span>ventas@inacons.com.pe</span>
+          </div>
+          <div class="top-bar-contact">
+            <i data-lucide="phone" style={{ width: "14px", height: "14px" }}></i>
+            <span>+51 064 654 736</span>
+          </div>
+        </div>
+        <div class="top-bar-social">
+          <a href="https://wa.me/51948888070" target="_blank" rel="noopener" aria-label="WhatsApp">
+            <i class="fa-brands fa-whatsapp"></i>
+          </a>
+          <a href="https://www.facebook.com/www.inacons.com.pe" target="_blank" rel="noopener" aria-label="Facebook">
+            <i class="fa-brands fa-facebook-f"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- HEADER -->
+    <header class="header with-topbar" id="header">
+      <div class="container">
+        <a href="/" class="logo">
+          <img src="/assets/imagenes/logos/logo_inacons_white.svg" alt="INACONS" class="logo-white" />
+          <img src="/assets/imagenes/logos/logo_inacons.svg" alt="INACONS" class="logo-color" />
+        </a>
+        <nav class="nav">
+          <ul>
+            <li><a href="/nosotros">Nosotros</a></li>
+            <li class="dropdown">
+              <a href="/servicios">Operaciones</a>
+              <ul class="dropdown-menu">
+                <li><a href="/servicios/obras-civiles">Obras Civiles</a></li>
+                <li><a href="/servicios/infraestructura">Infraestructura</a></li>
+                <li><a href="/servicios/electromecanica">Electromecánica</a></li>
+                <li><a href="/servicios/paisajismo">Paisajismo</a></li>
+                <li><a href="/servicios/mineria">Minería</a></li>
+                <li><a href="/servicios/consultoria">Consultoría</a></li>
+              </ul>
+            </li>
+            <li><a href="/proyectos">Proyectos</a></li>
+            <li><a href="/sostenibilidad">Sostenibilidad</a></li>
+            <li>
+              <a href="/contacto" class="nav-cta-btn">
+                <i data-lucide="send" style={{ width: "13px", height: "13px" }}></i> Contáctenos
+              </a>
+            </li>
+          </ul>
+        </nav>
+        <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+          <i data-lucide="menu" style={{ width: "24px", height: "24px" }}></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- CONTENIDO -->
+    <main class="main with-topbar">
+      <slot />
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+      <div class="container">
+        <div class="footer-content">
+          <div class="footer-section footer-brand">
+            <div class="footer-logo">
+              <img src="/assets/imagenes/logos/logo_inacons_white.svg" alt="INACONS" />
+            </div>
+            <p class="footer-slogan">
+              CONSTRUIMOS CONFIANZA<br>
+              INNOVAMOS ESPACIOS<br>
+              TRASCENDEMOS JUNTOS
+            </p>
+            <div class="footer-social">
+              <a href="https://wa.me/51948888070" target="_blank" rel="noopener" aria-label="WhatsApp">
+                <i class="fa-brands fa-whatsapp"></i>
+              </a>
+              <a href="https://www.facebook.com/www.inacons.com.pe" target="_blank" rel="noopener" aria-label="Facebook">
+                <i class="fa-brands fa-facebook-f"></i>
+              </a>
+            </div>
+          </div>
+          <div class="footer-section">
+            <h3>Navegación</h3>
+            <ul>
+              <li><a href="/nosotros">Nosotros</a></li>
+              <li><a href="/servicios">Operaciones</a></li>
+              <li><a href="/proyectos">Proyectos</a></li>
+              <li><a href="/contacto">Contacto</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Servicios</h3>
+            <ul>
+              <li><a href="/servicios/obras-civiles">Obras Civiles</a></li>
+              <li><a href="/servicios/infraestructura">Infraestructura</a></li>
+              <li><a href="/servicios/mineria">Minería</a></li>
+              <li><a href="/servicios/consultoria">Consultoría</a></li>
+            </ul>
+          </div>
+          <div class="footer-section">
+            <h3>Contacto</h3>
+            <ul>
+              <li>
+                <i class="fas fa-envelope" style="color:rgba(255,255,255,0.28);"></i>
+                ventas@inacons.com.pe
+              </li>
+              <li>
+                <i class="fas fa-phone" style="color:rgba(255,255,255,0.28);"></i>
+                +51 064 654 736
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <div class="container">
+          <p>&copy; {new Date().getFullYear()} INACONS S.R.L. — Todos los derechos reservados.</p>
+        </div>
+      </div>
+    </footer>
+
+    <!-- Flotantes -->
+    <a href="https://wa.me/51948888070" target="_blank" rel="noopener" class="whatsapp-float" aria-label="WhatsApp">
+      <i class="fa-brands fa-whatsapp"></i>
+    </a>
+    <button class="back-to-top" id="backToTop" aria-label="Volver arriba">
+      <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" is:inline></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" is:inline></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" is:inline></script>
+    <script src="/assets/js/main.js" is:inline></script>
+
+  </body>
+</html>
