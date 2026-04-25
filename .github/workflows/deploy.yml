@@ -31,4 +31,4 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           local-dir:  ./dist/
-          server-dir: /public_html/home.inacons.com.pe/
+          server-dir: /public_html/sites/home.inacons.com.pe/
