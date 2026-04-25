@@ -22,3 +22,10 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+echo "node_modules/
+dist/
+.astro/
+.env
+.env.*
+!.env.example" > .gitignore
