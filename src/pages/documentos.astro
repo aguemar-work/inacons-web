@@ -1,0 +1,328 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout titulo="Documentos" descripcion="Certificaciones ISO y documentos corporativos de INACONS — transparencia y compromiso con la calidad">
+
+  <style slot="head">
+    /* Pestañas */
+    .tabs-wrap {
+      display: flex;
+      gap: 0;
+      border-bottom: 2px solid var(--c-border-light);
+      margin-bottom: 56px;
+    }
+    .tab-btn {
+      padding: 18px 36px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      margin-bottom: -2px;
+      cursor: pointer;
+      transition: color .2s, border-color .2s;
+    }
+    .tab-btn:hover { color: var(--c-text-heading); }
+    .tab-btn.active {
+      color: var(--c-secondary);
+      border-bottom-color: var(--c-secondary);
+    }
+    .tab-panel { display: none; }
+    .tab-panel.active { display: block; }
+
+    /* Intro de sección */
+    .docs-intro {
+      max-width: 640px;
+      margin-bottom: 48px;
+    }
+    .docs-intro p {
+      font-size: 0.93rem;
+      color: var(--c-text-muted);
+      line-height: 1.85;
+    }
+
+    /* Cards */
+    .cert-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; }
+    .cert-grid .cert-card:nth-child(4) { grid-column: 1; }
+    .cert-grid .cert-card:nth-child(5) { grid-column: 2; }
+    .cert-card {
+      background: var(--c-bg-white);
+      border: 1px solid var(--c-border-light);
+      padding: 40px 32px 32px;
+      display: flex; flex-direction: column; align-items: flex-start;
+      position: relative; overflow: hidden;
+      transition: box-shadow .25s, transform .25s;
+      text-decoration: none; cursor: pointer;
+    }
+    .cert-card::before {
+      content: ''; position: absolute;
+      top: 0; left: 0; width: 3px; height: 100%;
+      background: var(--c-border-light);
+      transition: background .25s;
+    }
+    .cert-card:hover { box-shadow: var(--shadow-card-hover); transform: translateY(-4px); }
+    .cert-card:hover::before { background: var(--c-secondary); }
+    .cert-bg-num {
+      position: absolute; top: 12px; right: 16px;
+      font-size: 4.5rem; font-weight: 800;
+      color: rgba(20,23,45,0.04);
+      line-height: 1; pointer-events: none; user-select: none; letter-spacing: -2px;
+    }
+    .cert-icon-wrap {
+      width: 52px; height: 52px;
+      background: var(--c-bg-muted); border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--c-secondary); margin-bottom: 20px;
+      transition: background .25s, color .25s; position: relative; z-index: 1;
+    }
+    .cert-card:hover .cert-icon-wrap { background: var(--c-secondary); color: #fff; }
+    .cert-norm {
+      font-size: 0.65rem; font-weight: 700; letter-spacing: 2.5px;
+      text-transform: uppercase; color: var(--c-secondary);
+      margin-bottom: 8px; position: relative; z-index: 1;
+    }
+    .cert-title {
+      font-size: 1rem; font-weight: 700; color: var(--c-text-heading);
+      line-height: 1.3; margin-bottom: 12px; position: relative; z-index: 1;
+    }
+    .cert-desc {
+      font-size: 0.83rem; color: var(--c-text-muted);
+      line-height: 1.75; flex: 1; margin-bottom: 28px;
+      position: relative; z-index: 1;
+    }
+    .cert-download {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 10px 22px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.74rem; font-weight: 700; letter-spacing: 0.5px;
+      text-transform: uppercase; text-decoration: none;
+      border: 1.5px solid var(--c-secondary); color: var(--c-secondary);
+      border-radius: 2px;
+      transition: background .22s, color .22s;
+      position: relative; z-index: 1; margin-top: auto;
+    }
+    .cert-card:hover .cert-download { background: var(--c-secondary); color: #fff; }
+
+    /* Banda de normas */
+    .norms-band {
+      display: flex; justify-content: center; flex-wrap: wrap; gap: 0;
+      margin-top: 56px;
+      border: 1px solid var(--c-border-light); border-radius: 2px; overflow: hidden;
+    }
+    .norm-item {
+      flex: 1; min-width: 160px;
+      display: flex; flex-direction: column; align-items: center;
+      padding: 28px 20px;
+      border-right: 1px solid var(--c-border-light);
+      text-align: center; transition: background .22s;
+    }
+    .norm-item:last-child { border-right: none; }
+    .norm-item:hover { background: rgba(27,82,120,0.04); }
+    .norm-code { font-size: 1.1rem; font-weight: 800; color: var(--c-primary); letter-spacing: -0.5px; margin-bottom: 4px; }
+    .norm-name { font-size: 0.72rem; color: var(--c-text-muted); font-weight: 500; }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .cert-grid { grid-template-columns: 1fr; }
+      .cert-grid .cert-card:nth-child(4),
+      .cert-grid .cert-card:nth-child(5) { grid-column: 1; }
+      .norms-band { flex-direction: column; }
+      .norm-item { border-right: none; border-bottom: 1px solid var(--c-border-light); }
+      .norm-item:last-child { border-bottom: none; }
+      .tab-btn { padding: 14px 18px; font-size: 0.72rem; }
+    }
+    @media (min-width: 769px) and (max-width: 1023px) {
+      .cert-grid { grid-template-columns: repeat(2, 1fr); }
+      .cert-grid .cert-card:nth-child(4),
+      .cert-grid .cert-card:nth-child(5) { grid-column: auto; }
+    }
+  </style>
+
+  <!-- HERO -->
+  <section class="page-hero page-hero--sm">
+    <div class="page-hero-bg" style="background-image: url('/assets/imagenes/home_about.webp'); background-position: center top;"></div>
+    <div class="page-hero-overlay"></div>
+    <div class="page-hero-content" data-aos="fade-up" data-aos-duration="800">
+      <nav class="breadcrumb">
+        <a href="/">Inicio</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-current">Documentos</span>
+      </nav>
+      <h1 class="page-hero-title">Transparencia en<br>cada proceso</h1>
+      <p class="page-hero-subtitle">Certificaciones y políticas que respaldan nuestra forma de trabajar</p>
+    </div>
+  </section>
+
+  <!-- CONTENIDO CON PESTAÑAS -->
+  <section class="sec sec--white">
+    <div class="container">
+
+      <!-- Intro -->
+      <div class="docs-intro" data-aos="fade-up">
+        <div class="sh">
+          <p class="sh-label">Gestión y Calidad</p>
+          <h2 class="sh-title">Nuestro Sistema Integrado</h2>
+        </div>
+        <p>INACONS opera bajo un Sistema Integrado de Gestión que articula calidad, medio ambiente, seguridad y anticorrupción en cada proyecto. Aquí encontrarás los certificados que acreditan nuestros estándares y los documentos corporativos que rigen nuestra conducta.</p>
+      </div>
+
+      <!-- Pestañas -->
+      <div class="tabs-wrap" data-aos="fade-up">
+        <button class="tab-btn active" data-tab="certificaciones">
+          Certificaciones ISO
+        </button>
+        <button class="tab-btn" data-tab="politicas">
+          Políticas Corporativas
+        </button>
+      </div>
+
+      <!-- Panel: Certificaciones -->
+      <div class="tab-panel active" id="tab-certificaciones">
+        <div class="cert-grid">
+          <a href="/assets/documentos/inacons_9001.pdf" target="_blank" class="cert-card" data-aos="fade-up" data-aos-delay="80">
+            <span class="cert-bg-num">9001</span>
+            <div class="cert-icon-wrap"><i data-lucide="award" style={{ width: "24px", height: "24px" }}></i></div>
+            <p class="cert-norm">ISO 9001</p>
+            <h3 class="cert-title">Sistema de Gestión de Calidad</h3>
+            <p class="cert-desc">Garantiza la satisfacción del cliente y la mejora continua de nuestros procesos en todos los proyectos.</p>
+            <span class="cert-download">
+              <i data-lucide="download" style={{ width: "14px", height: "14px" }}></i> Descargar
+            </span>
+          </a>
+          <a href="/assets/documentos/inacons_14001.pdf" target="_blank" class="cert-card" data-aos="fade-up" data-aos-delay="160">
+            <span class="cert-bg-num">14001</span>
+            <div class="cert-icon-wrap"><i data-lucide="leaf" style={{ width: "24px", height: "24px" }}></i></div>
+            <p class="cert-norm">ISO 14001</p>
+            <h3 class="cert-title">Sistema de Gestión Ambiental</h3>
+            <p class="cert-desc">Demuestra nuestro compromiso con la protección del medio ambiente y el desarrollo sostenible.</p>
+            <span class="cert-download">
+              <i data-lucide="download" style={{ width: "14px", height: "14px" }}></i> Descargar
+            </span>
+          </a>
+          <a href="/assets/documentos/inacons_45001.pdf" target="_blank" class="cert-card" data-aos="fade-up" data-aos-delay="240">
+            <span class="cert-bg-num">45001</span>
+            <div class="cert-icon-wrap"><i data-lucide="shield-check" style={{ width: "24px", height: "24px" }}></i></div>
+            <p class="cert-norm">ISO 45001</p>
+            <h3 class="cert-title">Seguridad y Salud en el Trabajo</h3>
+            <p class="cert-desc">Prioriza el bienestar de nuestros colaboradores con los más altos estándares de seguridad ocupacional.</p>
+            <span class="cert-download">
+              <i data-lucide="download" style={{ width: "14px", height: "14px" }}></i> Descargar
+            </span>
+          </a>
+          <a href="/assets/documentos/inacons_37001.pdf" target="_blank" class="cert-card" data-aos="fade-up" data-aos-delay="320">
+            <span class="cert-bg-num">37001</span>
+            <div class="cert-icon-wrap"><i data-lucide="scale" style={{ width: "24px", height: "24px" }}></i></div>
+            <p class="cert-norm">ISO 37001</p>
+            <h3 class="cert-title">Sistema de Gestión Antisoborno</h3>
+            <p class="cert-desc">Refuerza nuestra cultura de integridad, ética y transparencia en todas las relaciones empresariales.</p>
+            <span class="cert-download">
+              <i data-lucide="download" style={{ width: "14px", height: "14px" }}></i> Descargar
+            </span>
+          </a>
+          <a href="/assets/documentos/certificado_ince_489.pdf" target="_blank" class="cert-card" data-aos="fade-up" data-aos-delay="400">
+            <span class="cert-bg-num">INCE</span>
+            <div class="cert-icon-wrap"><i data-lucide="badge-check" style={{ width: "24px", height: "24px" }}></i></div>
+            <p class="cert-norm">INCE-489</p>
+            <h3 class="cert-title">Certificado de Capacidad Técnica</h3>
+            <p class="cert-desc">Acredita nuestra capacidad técnica y experiencia comprobada en la ejecución de proyectos.</p>
+            <span class="cert-download">
+              <i data-lucide="download" style={{ width: "14px", height: "14px" }}></i> Descargar
+            </span>
+          </a>
+        </div>
+        <div class="norms-band" data-aos="fade-up">
+          <div class="norm-item"><p class="norm-code">ISO 9001</p><p class="norm-name">Calidad</p></div>
+          <div class="norm-item"><p class="norm-code">ISO 14001</p><p class="norm-name">Medio Ambiente</p></div>
+          <div class="norm-item"><p class="norm-code">ISO 45001</p><p class="norm-name">Seguridad</p></div>
+          <div class="norm-item"><p class="norm-code">ISO 37001</p><p class="norm-name">Antisoborno</p></div>
+          <div class="norm-item"><p class="norm-code">INCE-489</p><p class="norm-name">Cap. Técnica</p></div>
+        </div>
+      </div>
+
+      <!-- Panel: Políticas -->
+      <div class="tab-panel" id="tab-politicas">
+        <div class="cert-grid">
+          <a href="/assets/documentos/politica_alcohol_drogas.pdf" target="_blank" class="cert-card">
+            <span class="cert-bg-num">PDF</span>
+            <div class="cert-icon-wrap"><i data-lucide="shield-alert" style={{ width: "24px", height: "24px" }}></i></div>
+            <p class="cert-norm">Política</p>
+            <h3 class="cert-title">Alcohol y Drogas</h3>
+            <p class="cert-desc">Normativa sobre prevención y control del consumo de sustancias en el entorno de trabajo.</p>
+            <span class="cert-download">
+              <i data-lucide="download" style={{ width: "14px", height: "14px" }}></i> Ver documento
+            </span>
+          </a>
+          <a href="/assets/documentos/politica_negativa_trabajo_inseguro.pdf" target="_blank" class="cert-card">
+            <span class="cert-bg-num">PDF</span>
+            <div class="cert-icon-wrap"><i data-lucide="shield-x" style={{ width: "24px", height: "24px" }}></i></div>
+            <p class="cert-norm">Política</p>
+            <h3 class="cert-title">Negativa al Trabajo Inseguro</h3>
+            <p class="cert-desc">Derecho de los trabajadores a rechazar actividades que pongan en riesgo su seguridad.</p>
+            <span class="cert-download">
+              <i data-lucide="download" style={{ width: "14px", height: "14px" }}></i> Ver documento
+            </span>
+          </a>
+          <a href="/assets/documentos/politica_sig.pdf" target="_blank" class="cert-card">
+            <span class="cert-bg-num">PDF</span>
+            <div class="cert-icon-wrap"><i data-lucide="settings-2" style={{ width: "24px", height: "24px" }}></i></div>
+            <p class="cert-norm">Política</p>
+            <h3 class="cert-title">Sistema Integrado de Gestión</h3>
+            <p class="cert-desc">Política del Sistema Integrado de Gestión de Calidad, Medio Ambiente y Seguridad.</p>
+            <span class="cert-download">
+              <i data-lucide="download" style={{ width: "14px", height: "14px" }}></i> Ver documento
+            </span>
+          </a>
+          <a href="/assets/documentos/politica_antisoborno.pdf" target="_blank" class="cert-card">
+            <span class="cert-bg-num">PDF</span>
+            <div class="cert-icon-wrap"><i data-lucide="hand" style={{ width: "24px", height: "24px" }}></i></div>
+            <p class="cert-norm">Política</p>
+            <h3 class="cert-title">Antisoborno</h3>
+            <p class="cert-desc">Compromiso con la integridad y prevención de prácticas corruptas en todas las operaciones.</p>
+            <span class="cert-download">
+              <i data-lucide="download" style={{ width: "14px", height: "14px" }}></i> Ver documento
+            </span>
+          </a>
+          <a href="/assets/documentos/otros_alcance_sig.pdf" target="_blank" class="cert-card">
+            <span class="cert-bg-num">PDF</span>
+            <div class="cert-icon-wrap"><i data-lucide="file-text" style={{ width: "24px", height: "24px" }}></i></div>
+            <p class="cert-norm">Documento</p>
+            <h3 class="cert-title">Alcance del SIG</h3>
+            <p class="cert-desc">Documentación complementaria sobre el alcance de nuestro Sistema Integrado de Gestión.</p>
+            <span class="cert-download">
+              <i data-lucide="download" style={{ width: "14px", height: "14px" }}></i> Ver documento
+            </span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', function () {
+    const btns = document.querySelectorAll('.tab-btn');
+    const panels = document.querySelectorAll('.tab-panel');
+
+    btns.forEach(btn => {
+      btn.addEventListener('click', function () {
+        const target = this.getAttribute('data-tab');
+
+        btns.forEach(b => b.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+
+        this.classList.add('active');
+        document.getElementById('tab-' + target).classList.add('active');
+
+        // Reinicializar Lucide por si los íconos del panel no estaban visibles
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      });
+    });
+  });
+</script>

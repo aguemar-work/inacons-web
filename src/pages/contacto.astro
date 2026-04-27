@@ -2,7 +2,336 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 ---
 
-<BaseLayout title="Contacto">
-	<h1>Contacto</h1>
-	<p>Puede contactarnos a través de nuestro formulario de contacto o a través de nuestras redes sociales.</p>
+<BaseLayout titulo="Contacto" descripcion="Contáctate con INACONS para iniciar tu proyecto de construcción e ingeniería">
+
+  <style slot="head">
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.4fr;
+      gap: 72px;
+      align-items: start;
+    }
+    .contact-info-items { margin-top: 36px; }
+    .contact-info-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 20px 0;
+      border-bottom: 1px solid var(--c-border-light);
+    }
+    .contact-info-item:first-child { border-top: 1px solid var(--c-border-light); }
+    .c-icon {
+      width: 44px; height: 44px;
+      background: var(--c-bg-muted);
+      border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--c-secondary);
+      flex-shrink: 0;
+    }
+    .c-info-label {
+      font-size: 0.65rem; font-weight: 700;
+      letter-spacing: 2px; text-transform: uppercase;
+      color: var(--c-text-muted); margin-bottom: 4px;
+    }
+    .c-info-value { font-size: 0.92rem; font-weight: 600; color: var(--c-text-heading); line-height: 1.5; }
+    .c-info-value a { color: var(--c-text-heading); text-decoration: none; transition: color .2s; }
+    .c-info-value a:hover { color: var(--c-secondary); }
+    .contact-social { display: flex; gap: 10px; margin-top: 28px; }
+    .contact-social a {
+      width: 40px; height: 40px;
+      border: 1.5px solid var(--c-border);
+      border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--c-text-muted); text-decoration: none; font-size: 0.9rem;
+      transition: border-color .22s, color .22s, background .22s;
+    }
+    .contact-social a:hover {
+      border-color: var(--c-secondary);
+      color: var(--c-secondary);
+      background: rgba(27,82,120,0.05);
+    }
+    .contact-form-wrap {
+      background: var(--c-bg-white);
+      border: 1px solid var(--c-border-light);
+      border-top: 3px solid var(--c-secondary);
+      padding: 40px;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block; font-size: 0.70rem; font-weight: 700;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--c-text-muted); margin-bottom: 7px;
+    }
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      border: 1.5px solid var(--c-border);
+      border-radius: 2px;
+      padding: 12px 14px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.875rem;
+      color: var(--c-text-heading);
+      background: var(--c-bg-muted);
+      outline: none;
+      transition: border-color .22s, box-shadow .22s, background .22s;
+      -webkit-appearance: none;
+    }
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      border-color: var(--c-secondary);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(27,82,120,0.09);
+    }
+    .form-input::placeholder, .form-textarea::placeholder { color: #b0b6c8; }
+    .form-textarea { resize: vertical; min-height: 130px; }
+    .form-submit {
+      width: 100%; padding: 14px;
+      background: var(--c-secondary); color: #fff;
+      border: none; border-radius: 2px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.80rem; font-weight: 700;
+      letter-spacing: 1px; text-transform: uppercase;
+      cursor: pointer;
+      transition: background .22s, transform .22s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .form-submit:hover { background: var(--c-primary); transform: translateY(-1px); }
+    .location-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.8fr;
+      gap: 56px; align-items: start;
+    }
+    .location-items { margin-top: 8px; }
+    .location-item {
+      display: flex; gap: 16px; align-items: flex-start;
+      padding: 20px 0; border-bottom: 1px solid var(--c-border-light);
+    }
+    .location-item:first-child { border-top: 1px solid var(--c-border-light); }
+    .loc-icon {
+      width: 40px; height: 40px;
+      background: var(--c-bg-white);
+      border: 1px solid var(--c-border-light);
+      border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--c-secondary); flex-shrink: 0;
+    }
+    .loc-name { font-size: 0.82rem; font-weight: 700; color: var(--c-text-heading); margin-bottom: 4px; }
+    .loc-addr { font-size: 0.83rem; color: var(--c-text-muted); line-height: 1.6; }
+    .map-wrap { overflow: hidden; border-radius: 2px; border: 1px solid var(--c-border-light); height: 380px; }
+    .map-wrap iframe { width: 100%; height: 100%; border: 0; display: block; }
+    .channel-band { background: var(--c-primary); padding: var(--section-py) 0; }
+    .channel-band .sh-label { color: rgba(255,255,255,0.45); }
+    .channel-band .sh-label::before { background: rgba(255,255,255,0.25); }
+    .channel-band .sh-title { color: #fff; }
+    .channel-band .sh-desc  { color: rgba(255,255,255,0.62); }
+    .channel-features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin: 48px 0; }
+    .channel-feat {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.10);
+      border-radius: 2px; padding: 28px 24px;
+      transition: background .22s, border-color .22s;
+    }
+    .channel-feat:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.20); }
+    .channel-feat-icon {
+      width: 44px; height: 44px;
+      background: rgba(27,82,120,0.40);
+      border-radius: 2px;
+      display: flex; align-items: center; justify-content: center;
+      color: #fff; margin-bottom: 16px;
+    }
+    .channel-feat-title { font-size: 0.92rem; font-weight: 700; color: #fff; margin-bottom: 6px; }
+    .channel-feat-desc { font-size: 0.82rem; color: rgba(255,255,255,0.55); line-height: 1.65; }
+    .channel-cta { text-align: center; }
+    @media (max-width: 768px) {
+      .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+      .location-grid { grid-template-columns: 1fr; gap: 36px; }
+      .map-wrap { height: 280px; }
+      .form-row { grid-template-columns: 1fr; }
+      .channel-features { grid-template-columns: 1fr; }
+      .contact-form-wrap { padding: 28px 20px; }
+    }
+  </style>
+
+  <!-- HERO -->
+  <section class="page-hero page-hero--sm">
+    <div class="page-hero-bg" style="background-image: url('/assets/imagenes/home_hero.webp')"></div>
+    <div class="page-hero-overlay"></div>
+    <div class="page-hero-content" data-aos="fade-up" data-aos-duration="800">
+      <nav class="breadcrumb">
+        <a href="/">Inicio</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-current">Contacto</span>
+      </nav>
+      <h1 class="page-hero-title">¿Listo para tu<br>próximo proyecto?</h1>
+      <p class="page-hero-subtitle">Estamos aquí para ayudarte a materializar cada idea</p>
+    </div>
+  </section>
+
+  <!-- ① FORMULARIO + INFO -->
+  <section class="sec sec--white">
+    <div class="container">
+      <div class="contact-grid">
+        <div data-aos="fade-right" data-aos-duration="800">
+          <div class="sh sh--left sh--narrow">
+            <p class="sh-label">Información de Contacto</p>
+            <h2 class="sh-title">Conecta con nosotros</h2>
+            <p class="sh-desc">Estamos disponibles para atender tus consultas y proyectos.</p>
+          </div>
+          <div class="contact-info-items">
+            <div class="contact-info-item">
+              <div class="c-icon"><i data-lucide="mail" width={20} height={20}></i></div>
+              <div>
+                <p class="c-info-label">Correo Ventas</p>
+                <p class="c-info-value"><a href="mailto:ventas@inacons.com.pe">ventas@inacons.com.pe</a></p>
+              </div>
+            </div>
+            <div class="contact-info-item">
+              <div class="c-icon"><i data-lucide="mail" width={20} height={20}></i></div>
+              <div>
+                <p class="c-info-label">Correo Gerencia</p>
+                <p class="c-info-value"><a href="mailto:gerencia.proyectos@inacons.com.pe">gerencia.proyectos@inacons.com.pe</a></p>
+              </div>
+            </div>
+            <div class="contact-info-item">
+              <div class="c-icon"><i data-lucide="phone" width={20} height={20}></i></div>
+              <div>
+                <p class="c-info-label">Teléfono</p>
+                <p class="c-info-value"><a href="tel:+5164654736">+51 064 654 736</a></p>
+              </div>
+            </div>
+            <div class="contact-info-item">
+              <div class="c-icon"><i class="fa-brands fa-whatsapp" style="font-size:1.1rem;"></i></div>
+              <div>
+                <p class="c-info-label">WhatsApp</p>
+                <p class="c-info-value"><a href="https://wa.me/51948888070" target="_blank">+51 948 888 070</a></p>
+              </div>
+            </div>
+          </div>
+          <div class="contact-social">
+            <a href="https://wa.me/51948888070" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fa-brands fa-whatsapp"></i></a>
+            <a href="https://www.facebook.com/www.inacons.com.pe" target="_blank" rel="noopener" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://pe.linkedin.com/company/inacons" target="_blank" rel="noopener" aria-label="LinkedIn"><i class="fa-brands fa-linkedin-in"></i></a>
+          </div>
+        </div>
+        <div data-aos="fade-left" data-aos-duration="800">
+          <div class="contact-form-wrap">
+            <div class="sh sh--left" style="margin-bottom:28px;">
+              <p class="sh-label">Formulario de Contacto</p>
+              <h2 class="sh-title" style="font-size:1.3rem;">Cuéntanos sobre tu proyecto</h2>
+              <p class="sh-desc">Completa el formulario y nos pondremos en contacto a la brevedad.</p>
+            </div>
+            <form id="form" action="https://formspree.io/f/mdapkgog" method="POST">
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="fullName">Nombre Completo *</label>
+                  <input type="text" id="fullName" name="fullName" class="form-input" placeholder="Tu nombre" required />
+                </div>
+                <div class="form-group">
+                  <label for="email">Correo Electrónico *</label>
+                  <input type="email" id="email" name="email" class="form-input" placeholder="tu@correo.com" required />
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="phone">Teléfono *</label>
+                  <input type="tel" id="phone" name="phone" class="form-input" placeholder="+51 000 000 000" required />
+                </div>
+                <div class="form-group">
+                  <label for="service">Servicio de Interés *</label>
+                  <select id="service" name="service" class="form-select" required>
+                    <option value="">Selecciona un servicio</option>
+                    <option value="obras-civiles">Obras Civiles</option>
+                    <option value="infraestructura">Infraestructura</option>
+                    <option value="electromecanica">Electromecánica</option>
+                    <option value="paisajismo">Paisajismo</option>
+                    <option value="mineria">Minería</option>
+                    <option value="consultoria">Consultoría</option>
+                    <option value="otro">Otro</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="message">Mensaje *</label>
+                <textarea id="message" name="message" class="form-textarea" placeholder="Describe tu proyecto o consulta..." required></textarea>
+              </div>
+              <button type="submit" class="form-submit">
+                <i data-lucide="send" width={15} height={15}></i>
+                Enviar Mensaje
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ② UBICACIÓN -->
+  <section class="sec sec--muted">
+    <div class="container">
+      <div class="sh sh--left sh--narrow" data-aos="fade-up">
+        <p class="sh-label">Ubicación</p>
+        <h2 class="sh-title">Encuéntranos en nuestras oficinas</h2>
+      </div>
+      <div class="location-grid">
+        <div data-aos="fade-right">
+          <div class="location-items">
+            <div class="location-item">
+              <div class="loc-icon"><i data-lucide="map-pin" width={18} height={18}></i></div>
+              <div>
+                <p class="loc-name">Oficina Principal — Lima</p>
+                <p class="loc-addr">Av. Las Casuarinas 256<br>Pucusana, Lima — Perú</p>
+              </div>
+            </div>
+            <div class="location-item">
+              <div class="loc-icon"><i data-lucide="map-pin" width={18} height={18}></i></div>
+              <div>
+                <p class="loc-name">Oficina Regional — Huancayo</p>
+                <p class="loc-addr">Calle Casuarinas 112<br>El Tambo, Huancayo — Perú</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="map-wrap" data-aos="fade-left">
+          <iframe
+            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d300.22292866859664!2d-76.73602835672743!3d-12.475906069847317!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x910575ff986fe5c3%3A0xba45c58b4515799d!2sVelimaq!5e1!3m2!1ses!2spe!4v1758301077401!5m2!1ses!2spe"
+            allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ CANAL -->
+  <section class="channel-band">
+    <div class="container">
+      <div class="sh sh--center sh--medium" data-aos="fade-up">
+        <p class="sh-label">Canal de Comunicación</p>
+        <h2 class="sh-title">Canal directo de consultas y sugerencias</h2>
+        <p class="sh-desc">Tenemos un canal especializado para atender tus consultas, reclamos o sugerencias de manera directa y eficiente.</p>
+      </div>
+      <div class="channel-features">
+        <div class="channel-feat" data-aos="fade-up" data-aos-delay="80">
+          <div class="channel-feat-icon"><i data-lucide="message-circle" width={22} height={22}></i></div>
+          <h3 class="channel-feat-title">Consultas Directas</h3>
+          <p class="channel-feat-desc">Resuelve tus dudas sobre nuestros servicios de forma rápida y eficiente.</p>
+        </div>
+        <div class="channel-feat" data-aos="fade-up" data-aos-delay="160">
+          <div class="channel-feat-icon"><i data-lucide="alert-circle" width={22} height={22}></i></div>
+          <h3 class="channel-feat-title">Reclamos</h3>
+          <p class="channel-feat-desc">Reporta cualquier inconveniente para que podamos solucionarlo de inmediato.</p>
+        </div>
+        <div class="channel-feat" data-aos="fade-up" data-aos-delay="240">
+          <div class="channel-feat-icon"><i data-lucide="lightbulb" width={22} height={22}></i></div>
+          <h3 class="channel-feat-title">Sugerencias</h3>
+          <p class="channel-feat-desc">Comparte tus ideas para ayudarnos a mejorar continuamente nuestros servicios.</p>
+        </div>
+      </div>
+      <div class="channel-cta" data-aos="fade-up">
+        <a href="/canal-etico" class="btn btn-primary btn-lg">
+          Ingresar al Canal de Comunicación
+          <i data-lucide="external-link" width={15} height={15}></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
 </BaseLayout>

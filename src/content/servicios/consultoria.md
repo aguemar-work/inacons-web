@@ -1,7 +1,7 @@
 ---
 titulo: Consultoría
 descripcion: Asesoría técnica especializada en ingeniería y gestión de proyectos
-imagen: /assets/imagenes/consultoria.webp
+imagen: /assets/imagenes/image_consultor.webp
 orden: 5
 ---
 

@@ -11,17 +11,32 @@ servicios.sort((a: Servicio, b: Servicio) =>
 );
 ---
 
-<BaseLayout titulo="Servicios">
+<BaseLayout titulo="Operaciones" descripcion="Soluciones integrales en ingeniería y construcción para los sectores público y privado a nivel nacional.">
 
+  <!-- HERO -->
+  <section class="page-hero page-hero--sm">
+    <div class="page-hero-bg" style="background-image: url('/assets/imagenes/image_infraestructura.webp');"></div>
+    <div class="page-hero-overlay"></div>
+    <div class="page-hero-content" data-aos="fade-up" data-aos-duration="800">
+      <nav class="breadcrumb">
+        <a href="/">Inicio</a>
+        <span class="breadcrumb-sep">›</span>
+        <span class="breadcrumb-current">Operaciones</span>
+      </nav>
+      <h1 class="page-hero-title">Agregamos valor<br>en cada etapa</h1>
+      <p class="page-hero-subtitle">Soluciones integrales desde la planificación hasta la entrega final</p>
+    </div>
+  </section>
+
+  <!-- GRID DE SERVICIOS -->
   <section class="sec sec--muted">
     <div class="container">
 
-      <div class="sh sh--center sh--medium">
+      <div class="sh sh--center sh--medium" data-aos="fade-up">
         <p class="sh-label">Lo que hacemos</p>
-        <h1 class="sh-title">Nuestras Operaciones</h1>
+        <h2 class="sh-title">Nuestras Operaciones</h2>
         <p class="sh-desc">
-          Soluciones integrales en ingeniería y construcción para los sectores
-          público y privado a nivel nacional.
+          Ofrecemos servicios especializados que cubren todas las etapas de construcción, desde la planificación hasta la ejecución final.
         </p>
       </div>
 
@@ -42,6 +57,72 @@ servicios.sort((a: Servicio, b: Servicio) =>
         ))}
       </div>
 
+    </div>
+  </section>
+
+  <!-- PROCESO -->
+  <section class="sec sec--white">
+    <div class="container">
+      <div class="sh sh--center sh--medium" data-aos="fade-up">
+        <p class="sh-label">Nuestro Proceso</p>
+        <h2 class="sh-title">Metodología de trabajo</h2>
+        <p class="sh-desc">Cada proyecto sigue un proceso riguroso de cuatro etapas que garantiza calidad, cumplimiento de plazos y satisfacción total del cliente.</p>
+      </div>
+      <div class="process-grid">
+        <div class="process-step" data-aos="fade-up" data-aos-delay="80">
+          <div class="process-num">01</div>
+          <h3 class="process-title">Descubrimiento</h3>
+          <p class="process-desc">Analizamos a fondo las necesidades del proyecto, realizamos estudios de factibilidad y evaluamos todos los aspectos técnicos y normativos.</p>
+        </div>
+        <div class="process-step" data-aos="fade-up" data-aos-delay="160">
+          <div class="process-num">02</div>
+          <h3 class="process-title">Planificación y Diseño</h3>
+          <p class="process-desc">Desarrollamos planos detallados, cronogramas de trabajo y especificaciones técnicas, asegurando coordinación perfecta antes de la ejecución.</p>
+        </div>
+        <div class="process-step" data-aos="fade-up" data-aos-delay="240">
+          <div class="process-num">03</div>
+          <h3 class="process-title">Ejecución</h3>
+          <p class="process-desc">Implementamos el proyecto con equipos especializados, supervisión constante y control de calidad en cada etapa, con los más altos estándares.</p>
+        </div>
+        <div class="process-step" data-aos="fade-up" data-aos-delay="320">
+          <div class="process-num">04</div>
+          <h3 class="process-title">Entrega y Seguimiento</h3>
+          <p class="process-desc">Realizamos pruebas finales, entregamos la obra completamente funcional y brindamos soporte post-entrega para garantizar la satisfacción total.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TECNOLOGÍA -->
+  <section class="sec sec--muted">
+    <div class="container">
+      <div class="sh sh--center sh--medium" data-aos="fade-up">
+        <p class="sh-label">Tecnología</p>
+        <h2 class="sh-title">Innovación aplicada a cada proyecto</h2>
+        <p class="sh-desc">Incorporamos las últimas herramientas tecnológicas para optimizar procesos, reducir errores y entregar resultados superiores.</p>
+      </div>
+      <div class="tech-grid">
+        <div class="tech-card" data-aos="fade-up" data-aos-delay="80">
+          <div class="tech-img">
+            <img src="/assets/imagenes/tecnologia_control.jpg" alt="Supervisión Inteligente INACONS" loading="lazy" />
+          </div>
+          <div class="tech-content">
+            <p class="tech-label">Supervisión Inteligente</p>
+            <h3 class="tech-title">Tecnología Aplicada a Supervisión y Control</h3>
+            <p class="tech-desc">Control de Asistencia · Documentos Digitales · Drones · Lidar · Supervisión en tiempo real para mayor eficiencia y trazabilidad.</p>
+          </div>
+        </div>
+        <div class="tech-card" data-aos="fade-up" data-aos-delay="200">
+          <div class="tech-img">
+            <img src="/assets/imagenes/tecnologia_bim.jpg" alt="Tecnología BIM INACONS" loading="lazy" />
+          </div>
+          <div class="tech-content">
+            <p class="tech-label">Modelado Digital</p>
+            <h3 class="tech-title">Tecnología BIM</h3>
+            <p class="tech-desc">Impulsamos la gestión integral de proyectos con Building Information Modeling, mejorando eficiencia y coordinación en cada etapa del proceso.</p>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -112,12 +193,101 @@ servicios.sort((a: Servicio, b: Servicio) =>
     margin-bottom: 20px;
   }
 
+  /* Proceso */
+  .process-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3px;
+    margin-top: 48px;
+  }
+
+  .process-step {
+    padding: 40px 28px;
+    background: var(--c-bg-muted);
+    border: 1px solid var(--c-border-light);
+    position: relative;
+  }
+
+  .process-step::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: var(--c-secondary);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform .3s ease;
+  }
+
+  .process-step:hover::before { transform: scaleX(1); }
+
+  .process-num {
+    font-size: 3.5rem; font-weight: 800;
+    color: rgba(20,23,45,0.06);
+    line-height: 1; margin-bottom: 16px;
+    letter-spacing: -2px;
+  }
+
+  .process-title {
+    font-size: 1rem; font-weight: 700;
+    color: var(--c-text-heading); margin-bottom: 12px;
+  }
+
+  .process-desc {
+    font-size: 0.83rem; color: var(--c-text-muted); line-height: 1.75;
+  }
+
+  /* Tecnología */
+  .tech-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 3px;
+    margin-top: 48px;
+  }
+
+  .tech-card {
+    background: var(--c-bg-white);
+    border: 1px solid var(--c-border-light);
+    overflow: hidden;
+  }
+
+  .tech-img {
+    height: 260px;
+    overflow: hidden;
+  }
+
+  .tech-img img {
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform .5s ease;
+  }
+
+  .tech-card:hover .tech-img img { transform: scale(1.04); }
+
+  .tech-content { padding: 32px 32px 36px; }
+
+  .tech-label {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--c-secondary); margin-bottom: 10px;
+  }
+
+  .tech-title {
+    font-size: 1.1rem; font-weight: 700;
+    color: var(--c-text-heading); margin-bottom: 14px;
+  }
+
+  .tech-desc {
+    font-size: 0.85rem; color: var(--c-text-muted); line-height: 1.8;
+  }
+
   @media (max-width: 1023px) {
     .services-grid { grid-template-columns: repeat(2, 1fr); }
+    .process-grid { grid-template-columns: repeat(2, 1fr); }
+    .tech-grid { grid-template-columns: 1fr; }
   }
 
   @media (max-width: 640px) {
     .services-grid { grid-template-columns: 1fr; }
     .service-item  { height: 320px; }
+    .process-grid { grid-template-columns: 1fr; }
   }
 </style>

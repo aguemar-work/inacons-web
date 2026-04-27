@@ -1,7 +1,7 @@
 ---
 titulo: Infraestructura
 descripcion: Desarrollo de proyectos de infraestructura pública y privada
-imagen: /assets/imagenes/infraestructura.webp
+imagen: /assets/imagenes/image_infraestructura.webp
 ---
 ## ¿Qué ofrecemos?
 Soluciones integrales en infraestructura para sectores público y privado a nivel nacional

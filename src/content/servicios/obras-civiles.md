@@ -1,7 +1,7 @@
 ---
 titulo: Obras Civiles
 descripcion: Construcción de infraestructura urbana, industrial y minera
-imagen: /assets/imagenes/obras-civiles.webp
+imagen: /assets/imagenes/image_obra_civiles.webp
 ---
 
 ## ¿Qué ofrecemos?

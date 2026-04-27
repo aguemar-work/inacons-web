@@ -1,8 +1,628 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+
+type Proyecto = CollectionEntry<'proyectos'>;
+
+// Proyectos destacados para el home
+const proyectos = await getCollection('proyectos');
+const destacados = proyectos
+  .filter((p: Proyecto) => p.data.destacado)
+  .sort((a: Proyecto, b: Proyecto) => (a.data.orden ?? 99) - (b.data.orden ?? 99))
+  .slice(0, 3);
 ---
-<!-- Inicio -->
-<BaseLayout title="INACONS - Ingeniería y Construcción">
-	<h1>INACONS - Ingeniería y Construcción</h1>
-	<p>Más de 15 años construyendo proyectos de alta calidad</p>
+
+<BaseLayout
+  titulo="Empresa Constructora | Obras Civiles, Infraestructura y Consultoría"
+  descripcion="INACONS, empresa constructora con más de 15 años de experiencia en obras civiles, infraestructura, paisajismo, electromecánica, minería y consultoría."
+>
+
+  <style slot="head">
+    /* ── HERO ── */
+    .home-hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      min-height: 620px;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    .hero-video {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: 0;
+    }
+    .hero-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      background: linear-gradient(155deg,
+        rgba(20,23,45,0.88) 0%, rgba(27,82,120,0.48) 55%, rgba(20,23,45,0.92) 100%);
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 1200px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 0 40px;
+    }
+    .home-hero h1 {
+      font-family: 'Montserrat', sans-serif;
+      font-size: clamp(2rem, 4.5vw, 4rem);
+      font-weight: 700;
+      text-transform: uppercase;
+      line-height: 1.15;
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      letter-spacing: -0.3px;
+    }
+    .hero-line {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .word.fixed   { color: rgba(255,255,255,0.82); font-weight: 400; }
+    .word.highlight { color: #fff; font-weight: 800; }
+    .word.highlight.completed {
+      background: linear-gradient(transparent 84%, rgba(27,82,120,0.40) 84%);
+    }
+    .word.typewriter { opacity: 0; }
+    .word.typewriter.active { opacity: 1; }
+    .word.typewriter.typing::after {
+      content: '|';
+      color: rgba(255,255,255,0.55);
+      animation: blink .5s infinite;
+      margin-left: 2px;
+    }
+    .word.typewriter.completed::after { display: none; }
+    .hero-content > p {
+      font-size: clamp(0.90rem, 1.6vw, 1.05rem);
+      color: rgba(255,255,255,0.60);
+      margin-bottom: 32px;
+      max-width: 480px;
+    }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    /* ── INDICADORES ── */
+    .hero-indicators {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 3;
+      background: var(--c-primary);
+      border-top: 1px solid rgba(27,82,120,0.5);
+    }
+    .indicators-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 40px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+    }
+    .indicator {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 22px 16px;
+      border-right: 1px solid rgba(255,255,255,0.07);
+      transition: background .24s ease;
+    }
+    .indicator:last-child { border-right: none; }
+    .indicator:hover { background: rgba(255,255,255,0.03); }
+    .indicator-icon { color: rgba(255,255,255,0.35); margin-bottom: 6px; }
+    .indicator-number {
+      font-size: clamp(1.6rem, 3vw, 2.3rem);
+      font-weight: 800;
+      color: #fff;
+      line-height: 1;
+      letter-spacing: -1px;
+    }
+    .indicator-text {
+      font-size: 0.68rem;
+      color: rgba(255,255,255,0.42);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-top: 4px;
+      text-align: center;
+    }
+
+    /* ── ABOUT GRID ── */
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: center;
+    }
+    .about-img-wrap {
+      position: relative;
+      height: 480px;
+    }
+    .about-img-wrap::before {
+      content: '';
+      position: absolute;
+      top: -10px; left: -10px; right: 10px; bottom: 10px;
+      border: 1.5px solid var(--c-border);
+      border-radius: 2px;
+      z-index: 0;
+    }
+    .about-img-wrap img {
+      position: relative;
+      z-index: 1;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: top;
+      border-radius: 2px;
+    }
+
+    /* ── REGIONAL GRID ── */
+    .regional-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 80px;
+      align-items: center;
+    }
+    .regional-map-wrap { display: flex; justify-content: center; }
+    .peru-map {
+      max-width: 260px;
+      width: 100%;
+      filter: drop-shadow(0 6px 20px rgba(20,23,45,0.10));
+    }
+
+    /* ── INFO CAROUSEL ── */
+    .info-slide-inner {
+      display: flex;
+      flex-direction: column;
+      min-height: 450px;
+      border-radius: 0 !important;
+      border: none !important;
+      box-shadow: 0 4px 24px rgba(20,23,45,0.08) !important;
+    }
+    .info-slide-image {
+      width: 100%;
+      height: 280px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .info-slide-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .info-slide-content {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      justify-content: center;
+      background: var(--c-primary) !important;
+      position: relative;
+    }
+    .info-slide-content::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 3px; height: 100%;
+      background: var(--c-secondary);
+    }
+    .info-carousel-title {
+      font-size: clamp(1.5rem, 2.5vw, 2rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin: 0;
+      color: #fff !important;
+    }
+    .info-carousel-description {
+      font-size: 0.975rem;
+      line-height: 1.75;
+      margin: 0;
+      color: rgba(255,255,255,0.68) !important;
+    }
+    .info-carousel-swiper .swiper-button-next,
+    .info-carousel-swiper .swiper-button-prev {
+      background: rgba(255,255,255,0.10) !important;
+      color: #fff !important;
+    }
+    .info-carousel-swiper .swiper-button-next:hover,
+    .info-carousel-swiper .swiper-button-prev:hover {
+      background: var(--c-secondary) !important;
+    }
+    .info-carousel-swiper .swiper-pagination-bullet {
+      background: rgba(255,255,255,0.30) !important;
+      opacity: 1 !important;
+    }
+    .info-carousel-swiper .swiper-pagination-bullet-active {
+      background: #fff !important;
+    }
+
+    /* Desktop — lado a lado */
+    @media (min-width: 768px) {
+      .info-slide-inner {
+        flex-direction: row;
+        min-height: 420px;
+      }
+
+      .info-slide-image {
+        width: 45%;
+        height: auto;
+      }
+
+      .info-slide-content {
+        width: 55%;
+        padding: 48px 40px;
+      }
+    }
+
+    /* ── CLIENTES SCROLL ── */
+    .clients-track-wrap {
+      overflow: hidden;
+      mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+      -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+    }
+    .clients-track {
+      display: flex;
+      width: max-content;
+      animation: clientsScroll 30s linear infinite;
+    }
+    .clients-track:hover { animation-play-state: paused; }
+    @keyframes clientsScroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+    .client-logo-item {
+      flex: 0 0 158px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px 22px;
+      border-right: 1px solid var(--c-border-light);
+      filter: grayscale(100%);
+      opacity: 0.48;
+      transition: filter .24s ease, opacity .24s ease;
+    }
+    .client-logo-item:hover { filter: grayscale(0%); opacity: 1; }
+    .client-logo-item img { max-height: 40px; max-width: 108px; object-fit: contain; }
+
+    /* ── CTA BAND ── */
+    .cta-band { background: var(--c-primary); padding: 88px 0; }
+    .cta-band-inner {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 72px;
+      align-items: center;
+    }
+    .cta-band .sh-label { color: rgba(255,255,255,0.50); }
+    .cta-band .sh-label::before,
+    .cta-band .sh-label::after { background: rgba(255,255,255,0.25); }
+    .cta-band .sh-title { color: #fff; }
+    .cta-band .sh-desc  { color: rgba(255,255,255,0.62); }
+
+    /* Form card */
+    .form-card {
+      background: #fff;
+      border-radius: 2px;
+      padding: 40px;
+      box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+      border-top: 3px solid var(--c-secondary);
+    }
+    .form-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--c-primary);
+      margin-bottom: 22px;
+    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-group { margin-bottom: 12px; }
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      border: 1.5px solid var(--c-border);
+      border-radius: 2px;
+      padding: 11px 14px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 0.875rem;
+      color: var(--c-text-heading);
+      background: #f8f9fc;
+      outline: none;
+      transition: border-color .24s ease, box-shadow .24s ease;
+    }
+    .form-input:focus,
+    .form-textarea:focus {
+      border-color: var(--c-secondary);
+      background: #fff;
+      box-shadow: 0 0 0 3px rgba(27,82,120,0.10);
+    }
+    .form-input::placeholder,
+    .form-textarea::placeholder { color: #b0b6c8; }
+    .form-textarea { resize: vertical; min-height: 90px; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      .hero-content { padding: 0 20px; }
+      .home-hero h1 { text-align: center; }
+      .hero-content > p { text-align: center; margin-left: auto; margin-right: auto; max-width: 100%; }
+      .hero-actions { justify-content: center; }
+      .about-grid { grid-template-columns: 1fr; gap: 36px; }
+      .about-img-wrap { height: 280px; }
+      .about-img-wrap::before { display: none; }
+      .regional-grid { grid-template-columns: 1fr; gap: 36px; }
+      .indicators-container { grid-template-columns: repeat(2, 1fr); }
+      .cta-band-inner { grid-template-columns: 1fr; gap: 40px; }
+      .form-row { grid-template-columns: 1fr; }
+    }
+  </style>
+
+  <!-- ① HERO -->
+  <section class="home-hero">
+    <video class="hero-video" autoplay muted loop playsinline>
+      <source src="/assets/videos/hero.mp4" type="video/mp4" />
+    </video>
+    <div class="hero-overlay"></div>
+    <div class="hero-content" data-aos="fade-up" data-aos-duration="900">
+      <h1 id="typewriter-text">
+        <span class="hero-line">
+          <span class="word fixed">CONSTRUIMOS</span>
+          <span class="word highlight typewriter" data-text="CONFIANZA"></span>
+        </span>
+        <span class="hero-line">
+          <span class="word highlight typewriter" data-text="INNOVAMOS"></span>
+          <span class="word fixed">ESPACIOS</span>
+        </span>
+        <span class="hero-line">
+          <span class="word fixed">TRASCENDEMOS</span>
+          <span class="word highlight typewriter" data-text="JUNTOS"></span>
+        </span>
+      </h1>
+      <p>Más de 15 años de experiencia en ingeniería y construcción al servicio del Perú.</p>
+      <div class="hero-actions">
+        <a href="/proyectos" class="btn btn-primary btn-lg">
+          <i data-lucide="folder-open" style={{ width: "16px", height: "16px" }}></i> Ver Proyectos
+        </a>
+        <a href="/brochure_inacons.pdf" target="_blank" class="btn btn-outline-light btn-lg">
+          <i data-lucide="download" style={{ width: "16px", height: "16px" }}></i> Descargar Brochure
+        </a>
+      </div>
+    </div>
+    <div class="hero-indicators">
+      <div class="indicators-container">
+        <div class="indicator">
+          <div class="indicator-icon"><i data-lucide="calendar" style={{ width: "22px", height: "22px" }}></i></div>
+          <div class="indicator-number" data-target="15">15</div>
+          <div class="indicator-text">Años de experiencia</div>
+        </div>
+        <div class="indicator">
+          <div class="indicator-icon"><i data-lucide="map" style={{ width: "22px", height: "22px" }}></i></div>
+          <div class="indicator-number" data-target="150">150</div>
+          <div class="indicator-text">km² construidos</div>
+        </div>
+        <div class="indicator">
+          <div class="indicator-icon"><i data-lucide="trending-up" style={{ width: "22px", height: "22px" }}></i></div>
+          <div class="indicator-number" data-target="100">100</div>
+          <div class="indicator-text">MM de inversión</div>
+        </div>
+        <div class="indicator">
+          <div class="indicator-icon"><i data-lucide="users" style={{ width: "22px", height: "22px" }}></i></div>
+          <div class="indicator-number" data-target="100">100</div>
+          <div class="indicator-text">Profesionales</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ② NOSOTROS -->
+  <section class="sec sec--white">
+    <div class="container">
+      <div class="about-grid">
+        <div data-aos="fade-right" data-aos-duration="800">
+          <div class="sh sh--left sh--narrow">
+            <p class="sh-label">Bienvenido a INACONS</p>
+            <h2 class="sh-title">Líderes en Construcción e Infraestructura</h2>
+            <p class="sh-desc">En INACONS, nacimos en el Perú y con más de 15 años de experiencia hemos consolidado
+              una metodología innovadora que garantiza proyectos de alta calidad en plazos eficientes. Nuestra pasión
+              es construir soluciones que superen expectativas, aportando confianza y excelencia en cada obra.</p>
+          </div>
+          <a href="/nosotros" class="btn btn-primary">
+            Conócenos <i data-lucide="arrow-right" style={{ width: "15px", height: "15px" }}></i>
+          </a>
+        </div>
+        <div class="about-img-wrap" data-aos="fade-left" data-aos-duration="800">
+          <img src="/assets/imagenes/home_about.webp" alt="Equipo INACONS en obra" />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ③ EXPERIENCIA REGIONAL -->
+  <section class="sec sec--muted">
+    <div class="container">
+      <div class="regional-grid">
+        <div class="regional-map-wrap" data-aos="fade-right" data-aos-duration="800">
+          <img src="/assets/imagenes/peru2.svg" alt="Mapa del Perú" class="peru-map">
+        </div>
+        <div data-aos="fade-left" data-aos-duration="800">
+          <div class="sh sh--left">
+            <p class="sh-label">Experiencia Regional</p>
+            <h2 class="sh-title">Nuestra presencia en cada región</h2>
+            <p class="sh-desc">Presentes en las operaciones de ingeniería y construcción más importantes del país, con
+              más de 30 zonas de trabajo en simultáneo a lo largo de todo el territorio peruano.</p>
+          </div>
+          <a href="/proyectos" class="btn btn-outline">
+            Ver proyectos por región <i data-lucide="arrow-right" style={{ width: "15px", height: "15px" }}></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ④ INFO CAROUSEL -->
+  <section class="sec sec--white">
+    <div class="container">
+      <div class="swiper info-carousel-swiper">
+        <div class="swiper-wrapper">
+          <div class="swiper-slide">
+            <div class="info-slide-inner">
+              <div class="info-slide-image">
+                <img src="/assets/imagenes/home_about.webp" alt="Servicios INACONS">
+              </div>
+              <div class="info-slide-content">
+                <h2 class="info-carousel-title">Nuestros Servicios</h2>
+                <p class="info-carousel-description">Transformamos desafíos en oportunidades, ofreciendo soluciones
+                  integrales en construcción, infraestructura y consultoría. Nuestro equipo especializado trabaja con
+                  metodologías innovadoras para garantizar proyectos exitosos que superan las expectativas de nuestros
+                  clientes.</p>
+                <a href="/servicios" class="btn btn-outline-light">
+                  Ver Operaciones <i data-lucide="arrow-right" style={{ width: "14px", height: "14px" }}></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="info-slide-inner">
+              <div class="info-slide-image">
+                <img src="/assets/imagenes/home_about.webp" alt="Certificaciones INACONS">
+              </div>
+              <div class="info-slide-content">
+                <h2 class="info-carousel-title">Nuestras Alianzas</h2>
+                <p class="info-carousel-description">Contamos con certificaciones internacionales y alianzas
+                  estratégicas que respaldan nuestro compromiso con la calidad. Trabajamos con los más altos
+                  estándares de la industria para asegurar la excelencia en cada proyecto.</p>
+                <a href="/certificacion" class="btn btn-outline-light">
+                  Ver Certificaciones <i data-lucide="arrow-right" style={{ width: "14px", height: "14px" }}></i>
+                </a>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-slide">
+            <div class="info-slide-inner">
+              <div class="info-slide-image">
+                <img src="/assets/imagenes/home_about.webp" alt="Sostenibilidad INACONS">
+              </div>
+              <div class="info-slide-content">
+                <h2 class="info-carousel-title">Nuestro Compromiso</h2>
+                <p class="info-carousel-description">Con más de 15 años de trayectoria, nuestro compromiso con la
+                  sostenibilidad y el desarrollo responsable es inquebrantable. Implementamos prácticas que protegen
+                  el medio ambiente mientras generamos valor para las comunidades.</p>
+                <a href="/sostenibilidad" class="btn btn-outline-light">
+                  Nuestra Sostenibilidad <i data-lucide="arrow-right" style={{ width: "14px", height: "14px" }}></i>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-pagination"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑤ CLIENTES -->
+  <section class="sec sec--muted" id="clientes">
+    <div class="container">
+      <div class="sh sh--center sh--medium" data-aos="fade-up" data-aos-duration="600">
+        <p class="sh-label">Nuestros Clientes</p>
+        <h2 class="sh-title">Empresas que confían en nuestra experiencia y calidad</h2>
+        <p class="sh-desc">Trabajamos con empresas líderes que valoran la calidad, innovación y compromiso en cada
+          proyecto de construcción.</p>
+      </div>
+      <div class="clients-track-wrap">
+        <div class="clients-track">
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_electrocentro.png" alt="Electrocentro" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_electrodunas.png" alt="Electrodunas" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_enel.png" alt="Enel" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_epsgrau.png" alt="EPS Grau" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_grupocentenario.png" alt="Grupo Centenario" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_indecopi.png" alt="Indecopi" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_losportales.png" alt="Los Portales" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_luzdelsur.png" alt="Luz del Sur" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_mediacommerce.png" alt="Media Commerce" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_sanmiguel.png" alt="San Miguel" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_sedapal.png" alt="Sedapal" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_zv.png" alt="ZV" loading="lazy"></div>
+          <!-- Duplicado para scroll infinito -->
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_electrocentro.png" alt="Electrocentro" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_electrodunas.png" alt="Electrodunas" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_enel.png" alt="Enel" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_epsgrau.png" alt="EPS Grau" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_grupocentenario.png" alt="Grupo Centenario" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_indecopi.png" alt="Indecopi" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_losportales.png" alt="Los Portales" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_luzdelsur.png" alt="Luz del Sur" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_mediacommerce.png" alt="Media Commerce" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_sanmiguel.png" alt="San Miguel" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_sedapal.png" alt="Sedapal" loading="lazy"></div>
+          <div class="client-logo-item"><img src="/assets/imagenes/clientes/cliente_zv.png" alt="ZV" loading="lazy"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ⑥ CTA + FORMULARIO -->
+  <section class="cta-band" id="quick-contact">
+    <div class="container">
+      <div class="cta-band-inner">
+        <div data-aos="fade-right">
+          <div class="sh sh--left sh--narrow">
+            <p class="sh-label">¿Tienes un proyecto?</p>
+            <h2 class="sh-title">¿Listo para iniciar su proyecto?</h2>
+            <p class="sh-desc">Nuestro equipo de expertos está listo para asesorarlo en soluciones de ingeniería y
+              construcción a medida.</p>
+          </div>
+          <div style="display:flex; gap:12px; flex-wrap:wrap; margin-top:32px;">
+            <a href="/contacto" class="btn btn-primary">
+              Contáctenos <i data-lucide="arrow-right" style={{ width: "15px", height: "15px" }}></i>
+            </a>
+            <a href="/brochure_inacons.pdf" target="_blank" class="btn btn-outline-light">
+              <i data-lucide="download" style={{ width: "15px", height: "15px" }}></i> Brochure
+            </a>
+          </div>
+        </div>
+        <div data-aos="fade-left">
+          <div class="form-card">
+            <h3>Consulta Rápida</h3>
+            <form action="https://formspree.io/f/mdapkgog" method="POST">
+              <div class="form-row">
+                <div class="form-group">
+                  <input type="text" name="nombre" placeholder="Nombre completo" required class="form-input">
+                </div>
+                <div class="form-group">
+                  <input type="email" name="email" placeholder="Correo corporativo" required class="form-input">
+                </div>
+              </div>
+              <div class="form-group">
+                <textarea name="mensaje" placeholder="¿En qué podemos ayudarle?" required class="form-textarea"></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary" style="width:100%; justify-content:center;">
+                Enviar Consulta <i data-lucide="send" style={{ width: "14px", height: "14px" }}></i>
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Inicializar Swiper del carousel -->
+  <script is:inline>
+    document.addEventListener('DOMContentLoaded', function () {
+      if (typeof Swiper !== 'undefined' && document.querySelector('.info-carousel-swiper')) {
+        new Swiper('.info-carousel-swiper', {
+          loop: true,
+          slidesPerView: 1,
+          autoplay: { delay: 5500, disableOnInteraction: false },
+          navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+          pagination: { el: '.swiper-pagination', clickable: true },
+        });
+      }
+    });
+  </script>
+
 </BaseLayout>

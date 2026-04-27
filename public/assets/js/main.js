@@ -1,4 +1,3 @@
-
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function () {
   // Initialize Lucide icons
@@ -490,7 +489,7 @@ function initializeInfoCarousel() {
 
   const infoSwiper = new Swiper('.info-carousel-swiper', {
     loop: true,
-    speed: 800, // Smooth transition
+    speed: 700,
     autoplay: {
       delay: 5000,
       disableOnInteraction: false,
@@ -498,6 +497,10 @@ function initializeInfoCarousel() {
     },
     effect: 'slide',
     grabCursor: true,
+    slidesPerView: 1,
+    spaceBetween: 0,
+    watchOverflow: true,
+    resistanceRatio: 0,
     pagination: {
       el: '.swiper-pagination',
       clickable: true,
@@ -507,21 +510,9 @@ function initializeInfoCarousel() {
       nextEl: '.swiper-button-next',
       prevEl: '.swiper-button-prev',
     },
-    breakpoints: {
-      320: {
-        slidesPerView: 1,
-        spaceBetween: 20,
-      },
-      768: {
-        slidesPerView: 1,
-        spaceBetween: 30,
-      },
-    },
     on: {
       init: function() {
-        if (typeof lucide !== 'undefined') {
-          lucide.createIcons();
-        }
+        if (typeof lucide !== 'undefined') lucide.createIcons();
       }
     }
   });

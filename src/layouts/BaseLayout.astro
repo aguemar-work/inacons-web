@@ -51,6 +51,7 @@ const metaDescription = description ?? descripcion ?? 'INACONS - Ingeniería y C
             <i data-lucide="phone" style={{ width: "14px", height: "14px" }}></i>
             <span>+51 064 654 736</span>
           </div>
+          <a href="/canal-etico" class="top-bar-etico">Canal Ético</a>
         </div>
         <div class="top-bar-social">
           <a href="https://wa.me/51948888070" target="_blank" rel="noopener" aria-label="WhatsApp">
@@ -86,6 +87,7 @@ const metaDescription = description ?? descripcion ?? 'INACONS - Ingeniería y C
             </li>
             <li><a href="/proyectos">Proyectos</a></li>
             <li><a href="/sostenibilidad">Sostenibilidad</a></li>
+            <li><a href="/documentos">Documentos</a></li>
             <li>
               <a href="/contacto" class="nav-cta-btn">
                 <i data-lucide="send" style={{ width: "13px", height: "13px" }}></i> Contáctenos
@@ -98,6 +100,26 @@ const metaDescription = description ?? descripcion ?? 'INACONS - Ingeniería y C
         </button>
       </div>
     </header>
+
+    <div class="mobile-menu" id="mobileMenu">
+      <div class="mobile-menu-overlay"></div>
+      <div class="mobile-menu-content">
+        <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Cerrar menú">
+          <i data-lucide="x" style={{ width: "28px", height: "28px" }}></i>
+        </button>
+        <nav class="mobile-nav">
+          <ul>
+            <li><a href="/nosotros">Nosotros</a></li>
+            <li><a href="/servicios">Operaciones</a></li>
+            <li><a href="/proyectos">Proyectos</a></li>
+            <li><a href="/sostenibilidad">Sostenibilidad</a></li>
+            <li><a href="/documentos">Documentos</a></li>
+            <li><a href="/canal-etico">Canal Ético</a></li>
+            <li><a href="/contacto">Contacto</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
 
     <!-- CONTENIDO -->
     <main class="main with-topbar">
@@ -132,7 +154,9 @@ const metaDescription = description ?? descripcion ?? 'INACONS - Ingeniería y C
               <li><a href="/nosotros">Nosotros</a></li>
               <li><a href="/servicios">Operaciones</a></li>
               <li><a href="/proyectos">Proyectos</a></li>
-              <li><a href="/contacto">Contacto</a></li>
+              <li><a href="/sostenibilidad">Sostenibilidad</a></li>
+              <li><a href="/documentacion">Documentación</a></li>
+              <li><a href="/certificacion">Certificación</a></li>
             </ul>
           </div>
           <div class="footer-section">
@@ -140,6 +164,8 @@ const metaDescription = description ?? descripcion ?? 'INACONS - Ingeniería y C
             <ul>
               <li><a href="/servicios/obras-civiles">Obras Civiles</a></li>
               <li><a href="/servicios/infraestructura">Infraestructura</a></li>
+              <li><a href="/servicios/electromecanica">Electromecánica</a></li>
+              <li><a href="/servicios/paisajismo">Paisajismo</a></li>
               <li><a href="/servicios/mineria">Minería</a></li>
               <li><a href="/servicios/consultoria">Consultoría</a></li>
             </ul>
@@ -162,20 +188,27 @@ const metaDescription = description ?? descripcion ?? 'INACONS - Ingeniería y C
       <div class="footer-bottom">
         <div class="container">
           <p>&copy; {new Date().getFullYear()} INACONS S.R.L. — Todos los derechos reservados.</p>
+          <div class="footer-bottom-links">
+            <a href="/canal-etico">Canal Ético</a>
+            <a href="/documentacion">Documentación</a>
+            <a href="/certificacion">ISO 9001</a>
+          </div>
         </div>
       </div>
     </footer>
 
     <!-- Flotantes -->
-    <a href="https://wa.me/51948888070" target="_blank" rel="noopener" class="whatsapp-float" aria-label="WhatsApp">
-      <i class="fa-brands fa-whatsapp"></i>
-    </a>
     <button class="back-to-top" id="backToTop" aria-label="Volver arriba">
       <i class="fas fa-chevron-up"></i>
     </button>
 
     <!-- Scripts -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" is:inline></script>
+    <script is:inline>
+      document.addEventListener('DOMContentLoaded', function() {
+        if (typeof lucide !== 'undefined') lucide.createIcons();
+      });
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js" is:inline></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js" is:inline></script>
     <script src="/assets/js/main.js" is:inline></script>

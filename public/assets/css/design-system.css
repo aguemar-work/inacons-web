@@ -437,7 +437,7 @@ a.btn {
 ══════════════════════════════════════════════════════════════ */
 .page-hero {
     position: relative;
-    height: 62vh;
+    height: 80vh;
     min-height: 480px;
     display: flex;
     align-items: flex-end;
@@ -446,8 +446,8 @@ a.btn {
 
 /* Variante compacta para páginas de menor jerarquía */
 .page-hero--sm {
-    height: 52vh;
-    min-height: 400px;
+    height: 80vh;
+    min-height: 480px;
 }
 
 .page-hero-bg {
@@ -589,7 +589,31 @@ a.btn {
 
 .top-bar-social {
     display: flex;
+    align-items: center;
     gap: 10px;
+}
+
+.top-bar-etico {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 12px;
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-decoration: none;
+    color: rgba(255,255,255,0.85);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 2px;
+    transition: background var(--t), color var(--t), border-color var(--t);
+    white-space: nowrap;
+}
+
+.top-bar-etico:hover {
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border-color: rgba(255,255,255,0.5);
 }
 
 .top-bar-social a {
@@ -1297,13 +1321,13 @@ a.btn {
 
     /* Page Hero */
     .page-hero {
-        height: 52vh;
+        height: 60vh;
         min-height: 360px;
     }
 
     .page-hero--sm {
-        height: 46vh;
-        min-height: 320px;
+        height: 60vh;
+        min-height: 360px;
     }
 
     .page-hero-content {
