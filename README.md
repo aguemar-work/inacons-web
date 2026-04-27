@@ -1,43 +1,70 @@
-# Astro Starter Kit: Minimal
+# INACONS — Sitio Web Corporativo
 
-```sh
-npm create astro@latest -- --template minimal
+Sitio web institucional de INACONS S.R.L., empresa peruana de ingeniería y construcción.
+
+## Stack
+
+- **Framework:** Astro 5
+- **CMS:** Decap CMS con backend GitHub
+- **CSS:** Design System propio (design-system.css)
+- **Deploy:** GitHub Actions → FTP → cPanel
+- **Dominio:** home.inacons.com.pe
+
+## Estructura
+
+```
+src/
+  content/
+    proyectos/     ← archivos .md de cada proyecto (editables desde el CMS)
+    servicios/     ← archivos .md de cada servicio
+  layouts/
+    BaseLayout.astro   ← layout global (nav, footer, scripts)
+  pages/
+    index.astro
+    nosotros.astro
+    servicios/
+    proyectos/
+    documentos.astro
+    canal-etico.astro
+    contacto.astro
+public/
+  admin/
+    config.yml     ← configuración del CMS
+  assets/
+    css/design-system.css
+    js/main.js, email.js
+    imagenes/
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Desarrollo local
 
-## 🚀 Project Structure
-
-Inside of your Astro project, you'll see the following folders and files:
-
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+```bash
+npm install
+npm run dev
+# http://localhost:4321
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+## Deploy
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+Automático en cada push a `main` vía GitHub Actions → FTP → cPanel.
 
-Any static assets, like images, can be placed in the `public/` directory.
+Secrets requeridos en el repo:
 
-## 🧞 Commands
+| Secret | Descripción |
+|--------|-------------|
+| `FTP_SERVER` | Host FTP del cPanel |
+| `FTP_USERNAME` | Usuario FTP |
+| `FTP_PASSWORD` | Contraseña FTP |
 
-All commands are run from the root of the project, from a terminal:
+## CMS
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+Panel en `/admin`. Autenticación con GitHub.
+Gestiona: Proyectos y Servicios.
 
-## 👀 Want to learn more?
+## Pendientes
 
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- [ ] Subir video hero a `public/assets/videos/hero.mp4`
+- [ ] Subir brochure a `public/brochure_inacons.pdf` y descomentar en `servicios/[slug].astro`
+- [ ] Imágenes de proyectos en `public/assets/imagenes/proyectos/`
+- [ ] Configurar allowlist de dominio en EmailJS
+- [ ] Activar 2FA en la cuenta de GitHub de INACONS
