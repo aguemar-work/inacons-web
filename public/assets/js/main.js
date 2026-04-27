@@ -480,10 +480,6 @@ function initializeClientsAbout() {
 function initializeInfoCarousel() {
   // Check if Swiper is available and the container exists
   if (typeof Swiper === 'undefined' || !document.querySelector('.info-carousel-swiper')) {
-    // Only warn if the old carousel structure is also missing (avoid false positives on other pages)
-    if (document.querySelector('.info-carousel')) {
-        console.warn('Swiper not loaded or carousel container not found');
-    }
     return;
   }
 

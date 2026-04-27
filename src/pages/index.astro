@@ -180,18 +180,21 @@ const destacados = proyectos
     .info-slide-inner {
       display: flex;
       flex-direction: column;
-      min-height: 450px;
+      height: 480px;
       border-radius: 0 !important;
       border: none !important;
       box-shadow: 0 4px 24px rgba(20,23,45,0.08) !important;
     }
     .info-slide-image {
       width: 100%;
-      height: 280px;
+      height: 260px;
       overflow: hidden;
       flex-shrink: 0;
+      position: relative;
     }
     .info-slide-image img {
+      position: absolute;
+      inset: 0;
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -247,12 +250,12 @@ const destacados = proyectos
     @media (min-width: 768px) {
       .info-slide-inner {
         flex-direction: row;
-        min-height: 420px;
+        height: 420px;
       }
 
       .info-slide-image {
         width: 45%;
-        height: auto;
+        height: 100%;
       }
 
       .info-slide-content {
@@ -470,7 +473,7 @@ const destacados = proyectos
           <div class="swiper-slide">
             <div class="info-slide-inner">
               <div class="info-slide-image">
-                <img src="/assets/imagenes/home_about.webp" alt="Servicios INACONS">
+                <img src="/assets/imagenes/image_obra_civiles.webp" alt="Operaciones INACONS">
               </div>
               <div class="info-slide-content">
                 <h2 class="info-carousel-title">Nuestros Servicios</h2>
@@ -487,14 +490,14 @@ const destacados = proyectos
           <div class="swiper-slide">
             <div class="info-slide-inner">
               <div class="info-slide-image">
-                <img src="/assets/imagenes/home_about.webp" alt="Certificaciones INACONS">
+                <img src="/assets/imagenes/about_section.webp" alt="Certificaciones INACONS" loading="lazy">
               </div>
               <div class="info-slide-content">
                 <h2 class="info-carousel-title">Nuestras Alianzas</h2>
                 <p class="info-carousel-description">Contamos con certificaciones internacionales y alianzas
                   estratégicas que respaldan nuestro compromiso con la calidad. Trabajamos con los más altos
                   estándares de la industria para asegurar la excelencia en cada proyecto.</p>
-                <a href="/certificacion" class="btn btn-outline-light">
+                <a href="/documentos" class="btn btn-outline-light">
                   Ver Certificaciones <i data-lucide="arrow-right" style={{ width: "14px", height: "14px" }}></i>
                 </a>
               </div>
@@ -503,7 +506,7 @@ const destacados = proyectos
           <div class="swiper-slide">
             <div class="info-slide-inner">
               <div class="info-slide-image">
-                <img src="/assets/imagenes/home_about.webp" alt="Sostenibilidad INACONS">
+                <img src="/assets/imagenes/sostenibilidad-empresarial.webp" alt="Sostenibilidad INACONS" loading="lazy">
               </div>
               <div class="info-slide-content">
                 <h2 class="info-carousel-title">Nuestro Compromiso</h2>
