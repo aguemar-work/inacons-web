@@ -1,0 +1,149 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+
+<BaseLayout titulo="Página no encontrada" descripcion="La página que buscas no existe o fue movida.">
+
+  <style slot="head">
+    .error-section {
+      min-height: 80vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--c-bg-muted);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .error-section::before {
+      content: '404';
+      position: absolute;
+      font-size: clamp(12rem, 30vw, 22rem);
+      font-weight: 800;
+      color: rgba(20,23,45,0.04);
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -8px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+    }
+
+    .error-content {
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      padding: 40px 20px;
+      max-width: 560px;
+    }
+
+    .error-label {
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: var(--c-secondary);
+      margin-bottom: 20px;
+      display: block;
+    }
+
+    .error-title {
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 800;
+      color: var(--c-text-heading);
+      line-height: 1.15;
+      margin-bottom: 20px;
+      letter-spacing: -0.5px;
+    }
+
+    .error-desc {
+      font-size: 0.95rem;
+      color: var(--c-text-muted);
+      line-height: 1.8;
+      margin-bottom: 40px;
+    }
+
+    .error-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .error-links {
+      margin-top: 56px;
+      padding-top: 40px;
+      border-top: 1px solid var(--c-border-light);
+    }
+
+    .error-links p {
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      margin-bottom: 20px;
+    }
+
+    .error-links-grid {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .error-link-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 18px;
+      font-size: 0.80rem;
+      font-weight: 600;
+      color: var(--c-text-heading);
+      border: 1.5px solid var(--c-border-light);
+      border-radius: 2px;
+      text-decoration: none;
+      transition: border-color .2s, color .2s, background .2s;
+    }
+
+    .error-link-item:hover {
+      border-color: var(--c-secondary);
+      color: var(--c-secondary);
+      background: rgba(27,82,120,0.04);
+    }
+  </style>
+
+  <section class="error-section">
+    <div class="error-content" data-aos="fade-up">
+      <span class="error-label">Error 404</span>
+      <h1 class="error-title">Esta página<br>no existe</h1>
+      <p class="error-desc">
+        La URL que ingresaste no fue encontrada. Puede que haya sido movida,
+        eliminada o que hayas escrito mal la dirección.
+      </p>
+      <div class="error-actions">
+        <a href="/" class="btn btn-primary">
+          <i data-lucide="home" style={{ width: "15px", height: "15px" }}></i>
+          Ir al inicio
+        </a>
+        <a href="/contacto" class="btn btn-outline">
+          <i data-lucide="mail" style={{ width: "15px", height: "15px" }}></i>
+          Contáctenos
+        </a>
+      </div>
+
+      <div class="error-links">
+        <p>O visita una de estas páginas</p>
+        <div class="error-links-grid">
+          <a href="/nosotros" class="error-link-item">Nosotros</a>
+          <a href="/servicios" class="error-link-item">Operaciones</a>
+          <a href="/proyectos" class="error-link-item">Proyectos</a>
+          <a href="/documentos" class="error-link-item">Documentos</a>
+          <a href="/sostenibilidad" class="error-link-item">Sostenibilidad</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
