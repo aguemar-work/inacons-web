@@ -6,9 +6,9 @@
 
 // ── CONFIGURA ESTOS DATOS CON LOS DE TU CPANEL ──────────────
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'TU_USUARIO_qr');       // nombre de tu BD en cPanel
-define('DB_USER', 'TU_USUARIO_db');       // usuario MySQL de cPanel
-define('DB_PASS', 'TU_CONTRASEÑA_db');    // contraseña MySQL de cPanel
+define('DB_NAME', 'ene06ind_qr');
+define('DB_USER', 'ene06ind_qradmin');
+define('DB_PASS', 'Inacons2026@$*');
 // ─────────────────────────────────────────────────────────────
 
 try {

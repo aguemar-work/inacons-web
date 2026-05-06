@@ -5,9 +5,9 @@
 
 // ── CONFIGURACIÓN ────────────────────────────────────────────
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'TU_USUARIO_qr');
-define('DB_USER', 'TU_USUARIO_db');
-define('DB_PASS', 'TU_CONTRASEÑA_db');
+define('DB_NAME', 'ene06ind_qr');
+define('DB_USER', 'ene06ind_qradmin');
+define('DB_PASS', 'Inacons2026@$*');
 
 // Contraseña del panel (cámbiala)
 define('ADMIN_PASS', 'inacons2025');
