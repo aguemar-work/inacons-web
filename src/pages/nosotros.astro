@@ -1,148 +1,19 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
 ---
 
-<BaseLayout titulo="Nosotros" descripcion="Conoce más sobre INACONS: nuestra misión, visión y los valores que nos han consolidado como líderes en construcción e ingeniería durante más de 15 años.">
+<BaseLayout
+  title="Nosotros | INACONS"
+  description="Conoce más sobre INACONS: nuestra misión, visión y los valores que nos han consolidado como líderes en construcción e ingeniería durante más de 15 años."
+>
 
-  <style slot="head">
-    /* Quiénes somos */
-    .about-intro-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 80px;
-      align-items: center;
-    }
-    .about-intro-img {
-      position: relative;
-      height: 500px;
-    }
-    .about-intro-img::before {
-      content: '';
-      position: absolute;
-      top: -10px; left: -10px; right: 10px; bottom: 10px;
-      border: 1.5px solid var(--c-border);
-      border-radius: 2px;
-      z-index: 0;
-    }
-    .about-intro-img img {
-      position: relative; z-index: 1;
-      width: 100%; height: 100%; object-fit: cover; border-radius: 2px;
-    }
-    .about-stat-row {
-      display: flex; gap: 40px; margin-top: 40px;
-    }
-    .about-stat strong {
-      display: block;
-      font-size: 2.2rem; font-weight: 800;
-      color: var(--c-primary); letter-spacing: -1px; line-height: 1;
-    }
-    .about-stat span {
-      font-size: 0.78rem; color: var(--c-text-muted);
-      font-weight: 500; text-transform: uppercase; letter-spacing: 1px;
-    }
-
-    /* Misión / Visión / Valores */
-    .mvv-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 80px;
-      align-items: start;
-    }
-    .mvv-img {
-      position: sticky; top: 120px;
-      height: 520px; border-radius: 2px; overflow: hidden;
-    }
-    .mvv-img img { width: 100%; height: 100%; object-fit: cover; }
-    .mvv-block {
-      padding: 28px 0;
-      border-top: 1px solid var(--c-border-light);
-    }
-    .mvv-block:first-child { border-top: none; padding-top: 0; }
-    .mvv-label {
-      font-size: 0.65rem; font-weight: 700; letter-spacing: 2.5px;
-      text-transform: uppercase; color: var(--c-secondary);
-      margin-bottom: 10px;
-    }
-    .mvv-title {
-      font-size: 1.15rem; font-weight: 700;
-      color: var(--c-text-heading); margin-bottom: 12px;
-    }
-    .mvv-desc {
-      font-size: 0.88rem; color: var(--c-text-muted); line-height: 1.8;
-    }
-    .valores-list {
-      display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px;
-    }
-    .valor-tag {
-      display: inline-block;
-      padding: 6px 16px;
-      font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;
-      border: 1.5px solid var(--c-border);
-      color: var(--c-text-heading); border-radius: 2px;
-    }
-
-    /* Por qué INACONS */
-    .pillars-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 3px;
-      margin-top: 48px;
-    }
-    .pillar-card {
-      padding: 40px 28px;
-      background: var(--c-bg-white);
-      border: 1px solid var(--c-border-light);
-      position: relative;
-    }
-    .pillar-card::before {
-      content: '';
-      position: absolute; top: 0; left: 0;
-      width: 100%; height: 3px;
-      background: var(--c-border-light);
-      transition: background .25s;
-    }
-    .pillar-card:hover::before { background: var(--c-secondary); }
-    .pillar-num {
-      font-size: 3rem; font-weight: 800;
-      color: rgba(20,23,45,0.05);
-      line-height: 1; margin-bottom: 20px;
-      letter-spacing: -2px;
-    }
-    .pillar-title {
-      font-size: 1rem; font-weight: 700;
-      color: var(--c-text-heading); margin-bottom: 12px;
-    }
-    .pillar-desc {
-      font-size: 0.83rem; color: var(--c-text-muted); line-height: 1.75;
-    }
-
-    @media (max-width: 1023px) {
-      .about-intro-grid { grid-template-columns: 1fr; gap: 40px; }
-      .about-intro-img { height: 360px; }
-      .mvv-grid { grid-template-columns: 1fr; }
-      .mvv-img { position: relative; top: 0; height: 280px; }
-      .pillars-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 640px) {
-      .pillars-grid { grid-template-columns: 1fr; }
-      .about-stat-row { flex-wrap: wrap; gap: 24px; }
-    }
-  </style>
-
-  <!-- HERO -->
-  <section class="page-hero page-hero--sm">
-    <div class="page-hero-bg" style="background-image: url('/assets/imagenes/image_nosotros.webp');"></div>
-    <div class="page-hero-overlay"></div>
-    <div class="page-hero-content" data-aos="fade-up" data-aos-duration="800">
-      <nav class="breadcrumb">
-        <a href="/">Inicio</a>
-        <span class="breadcrumb-sep">›</span>
-        <span class="breadcrumb-current">Nosotros</span>
-      </nav>
-      <h1 class="page-hero-title">Comprometidos con la<br>Excelencia en Construcción</h1>
-      <p class="page-hero-subtitle">Más de 15 años construyendo confianza en el Perú</p>
-    </div>
-  </section>
+  <PageHero
+    image="/assets/imagenes/image_nosotros.webp"
+    title="Comprometidos con la<br>Excelencia en Construcción"
+    subtitle="Más de 15 años construyendo confianza en el Perú"
+    current="Nosotros"
+  />
 
   <!-- QUIÉNES SOMOS -->
   <section class="sec sec--white">
@@ -153,12 +24,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
             <p class="sh-label">Quiénes Somos</p>
             <h2 class="sh-title">Una empresa construida sobre confianza y resultados</h2>
           </div>
-          <p style="font-size:0.93rem;color:var(--c-text-body);line-height:1.85;margin-bottom:20px;">
+          <p class="body-text">
             Somos INACONS, una empresa con más de 15 años de experiencia en ingeniería y construcción en el Perú. Desarrollamos proyectos de alta complejidad con los más altos estándares de calidad, seguridad y sostenibilidad.
           </p>
-          <p style="font-size:0.93rem;color:var(--c-text-body);line-height:1.85;margin-bottom:36px;">
+          <p class="body-text" style="margin-bottom:36px;">
             Nuestro equipo multidisciplinario, conformado por más de 200 profesionales, nos permite ofrecer soluciones especializadas y cumplir con nuestra misión: transformar espacios y construir confianza en cada proyecto.
           </p>
+          <!-- data-counter y data-suffix son leídos por main.js -->
           <div class="about-stat-row">
             <div class="about-stat">
               <strong data-counter="15" data-suffix="+">0+</strong>
@@ -173,12 +45,13 @@ import BaseLayout from '../layouts/BaseLayout.astro';
               <span>Proyectos ejecutados</span>
             </div>
           </div>
-          <a href="/contacto" class="btn btn-primary" style="margin-top:36px;display:inline-flex;align-items:center;gap:8px;">
-            Trabajemos juntos <i data-lucide="arrow-right" style={{ width:"14px",height:"14px" }}></i>
+          <a href="/contacto" class="btn btn-primary" style="margin-top:36px;">
+            Trabajemos juntos
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
         <div class="about-intro-img" data-aos="fade-left">
-          <img src="/assets/imagenes/about_section.webp" alt="Equipo INACONS en obra" />
+          <img src="/assets/imagenes/about_section.webp" alt="Equipo INACONS en obra" loading="lazy" />
         </div>
       </div>
     </div>
@@ -216,7 +89,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           </div>
         </div>
         <div class="mvv-img" data-aos="fade-left">
-          <img src="/assets/imagenes/about_team.webp" alt="Equipo INACONS" />
+          <img src="/assets/imagenes/about_team.webp" alt="Equipo INACONS" loading="lazy" />
         </div>
       </div>
     </div>
@@ -255,42 +128,152 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     </div>
   </section>
 
+  <!--
+    NOTA: El contador animado (data-counter) ya lo maneja main.js
+    con IntersectionObserver. No necesitas el <script is:inline> que
+    había antes — lo puedes eliminar.
+  -->
+
 </BaseLayout>
 
-<script is:inline>
-  document.addEventListener('DOMContentLoaded', function () {
-    const counters = document.querySelectorAll('[data-counter]');
-    if (!counters.length) return;
+<style>
+  .body-text {
+    font-size: 0.93rem;
+    color: var(--c-text-body);
+    line-height: 1.85;
+    margin-bottom: 20px;
+  }
 
-    const animateCounter = (el) => {
-      const target = parseInt(el.getAttribute('data-counter'));
-      const suffix = el.getAttribute('data-suffix') || '';
-      const duration = 1800;
-      const start = performance.now();
+  /* Quiénes somos */
+  .about-intro-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: center;
+  }
 
-      const ease = (t) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
+  .about-intro-img {
+    position: relative;
+    height: 500px;
+  }
 
-      const update = (now) => {
-        const elapsed = now - start;
-        const progress = Math.min(elapsed / duration, 1);
-        const value = Math.floor(ease(progress) * target);
-        el.textContent = value + suffix;
-        if (progress < 1) requestAnimationFrame(update);
-        else el.textContent = target + suffix;
-      };
+  .about-intro-img::before {
+    content: '';
+    position: absolute;
+    top: -10px; left: -10px; right: 10px; bottom: 10px;
+    border: 1.5px solid var(--c-border);
+    border-radius: 2px;
+    z-index: 0;
+  }
 
-      requestAnimationFrame(update);
-    };
+  .about-intro-img img {
+    position: relative; z-index: 1;
+    width: 100%; height: 100%; object-fit: cover; border-radius: 2px;
+  }
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          animateCounter(entry.target);
-          observer.unobserve(entry.target);
-        }
-      });
-    }, { threshold: 0.5 });
+  .about-stat-row { display: flex; gap: 40px; margin-top: 40px; }
 
-    counters.forEach(el => observer.observe(el));
-  });
-</script>
+  .about-stat strong {
+    display: block;
+    font-size: 2.2rem; font-weight: 800;
+    color: var(--c-primary); letter-spacing: -1px; line-height: 1;
+  }
+
+  .about-stat span {
+    font-size: 0.78rem; color: var(--c-text-muted);
+    font-weight: 500; text-transform: uppercase; letter-spacing: 1px;
+  }
+
+  /* Misión / Visión / Valores */
+  .mvv-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .mvv-img {
+    position: sticky; top: 120px;
+    height: 520px; border-radius: 2px; overflow: hidden;
+  }
+
+  .mvv-img img { width: 100%; height: 100%; object-fit: cover; }
+
+  .mvv-block {
+    padding: 28px 0;
+    border-top: 1px solid var(--c-border-light);
+  }
+
+  .mvv-block:first-child { border-top: none; padding-top: 0; }
+
+  .mvv-label {
+    font-size: 0.65rem; font-weight: 700; letter-spacing: 2.5px;
+    text-transform: uppercase; color: var(--c-secondary);
+    margin-bottom: 10px;
+  }
+
+  .mvv-title {
+    font-size: 1.15rem; font-weight: 700;
+    color: var(--c-text-heading); margin-bottom: 12px;
+  }
+
+  .mvv-desc { font-size: 0.88rem; color: var(--c-text-muted); line-height: 1.8; }
+
+  .valores-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+
+  .valor-tag {
+    display: inline-block;
+    padding: 6px 16px;
+    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;
+    border: 1.5px solid var(--c-border);
+    color: var(--c-text-heading); border-radius: 2px;
+  }
+
+  /* Pilares */
+  .pillars-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 3px;
+    margin-top: 48px;
+  }
+
+  .pillar-card {
+    padding: 40px 28px;
+    background: var(--c-bg-white);
+    border: 1px solid var(--c-border-light);
+    position: relative;
+  }
+
+  .pillar-card::before {
+    content: '';
+    position: absolute; top: 0; left: 0;
+    width: 100%; height: 3px;
+    background: var(--c-border-light);
+    transition: background .25s;
+  }
+
+  .pillar-card:hover::before { background: var(--c-secondary); }
+
+  .pillar-num {
+    font-size: 3rem; font-weight: 800;
+    color: rgba(20,23,45,0.05);
+    line-height: 1; margin-bottom: 20px;
+    letter-spacing: -2px;
+  }
+
+  .pillar-title { font-size: 1rem; font-weight: 700; color: var(--c-text-heading); margin-bottom: 12px; }
+  .pillar-desc { font-size: 0.83rem; color: var(--c-text-muted); line-height: 1.75; }
+
+  @media (max-width: 1023px) {
+    .about-intro-grid { grid-template-columns: 1fr; gap: 40px; }
+    .about-intro-img { height: 360px; }
+    .mvv-grid { grid-template-columns: 1fr; }
+    .mvv-img { position: relative; top: 0; height: 280px; }
+    .pillars-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 640px) {
+    .pillars-grid { grid-template-columns: 1fr; }
+    .about-stat-row { flex-wrap: wrap; gap: 24px; }
+  }
+</style>

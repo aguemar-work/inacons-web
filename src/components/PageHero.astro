@@ -1,0 +1,83 @@
+---
+/**
+ * PageHero.astro
+ * ─────────────────────────────────────────────────────────────
+ * Hero section reutilizable para todas las páginas interiores.
+ * Reemplaza el bloque copy-paste que existía en:
+ *   nosotros, servicios/index, proyectos/index, contacto,
+ *   sostenibilidad, documentos, canal-etico,
+ *   servicios/[slug], proyectos/[slug]
+ *
+ * Uso básico (breadcrumb de 1 nivel):
+ *   <PageHero
+ *     image="/assets/imagenes/image_nosotros.webp"
+ *     title="Comprometidos con la<br>Excelencia"
+ *     subtitle="Más de 15 años construyendo confianza"
+ *     current="Nosotros"
+ *   />
+ *
+ * Uso con breadcrumb de 2 niveles (slug pages):
+ *   <PageHero
+ *     image={imagen}
+ *     title={titulo}
+ *     subtitle={descripcion}
+ *     parent={{ label: "Operaciones", href: "/servicios" }}
+ *     current={titulo}
+ *   />
+ *
+ * Props opcionales:
+ *   size="sm" | "md" (default "sm") — altura del hero
+ *   bgPosition — background-position CSS (default "center")
+ */
+
+interface BreadcrumbItem {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  image: string;
+  title: string;
+  subtitle?: string;
+  current: string;
+  parent?: BreadcrumbItem;
+  size?: 'sm' | 'md';
+  bgPosition?: string;
+}
+
+const {
+  image,
+  title,
+  subtitle,
+  current,
+  parent,
+  size = 'sm',
+  bgPosition = 'center',
+} = Astro.props;
+---
+
+<section class={`page-hero${size === 'sm' ? ' page-hero--sm' : ''}`}>
+  <div
+    class="page-hero-bg"
+    style={`background-image: url('${image}'); background-position: ${bgPosition};`}
+  ></div>
+  <div class="page-hero-overlay"></div>
+  <div class="page-hero-content" data-aos="fade-up" data-aos-duration="800">
+
+    <nav class="breadcrumb" aria-label="Breadcrumb">
+      <a href="/">Inicio</a>
+      {parent && (
+        <>
+          <span class="breadcrumb-sep" aria-hidden="true">›</span>
+          <a href={parent.href}>{parent.label}</a>
+        </>
+      )}
+      <span class="breadcrumb-sep" aria-hidden="true">›</span>
+      <span class="breadcrumb-current" aria-current="page">{current}</span>
+    </nav>
+
+    <h1 class="page-hero-title" set:html={title} />
+    {subtitle && <p class="page-hero-subtitle">{subtitle}</p>}
+
+  </div>
+</section>

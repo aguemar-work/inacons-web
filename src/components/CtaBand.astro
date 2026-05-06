@@ -1,0 +1,85 @@
+---
+/**
+ * CtaBand.astro
+ * ─────────────────────────────────────────────────────────────
+ * Banda CTA oscura al final de servicios/[slug] y proyectos/[slug].
+ * Antes estaba duplicada con pequeñas variaciones de texto en cada
+ * página slug.
+ *
+ * Uso en servicios/[slug].astro:
+ *   <CtaBand
+ *     label="¿Listo para iniciar?"
+ *     title={`¿Tienes un proyecto de ${titulo}?`}
+ *     description="Nuestro equipo técnico está disponible para asesorarte."
+ *     primaryHref="/contacto"
+ *     primaryLabel="Contactar ahora"
+ *     secondaryHref="/proyectos"
+ *     secondaryLabel="Ver proyectos"
+ *   />
+ *
+ * Uso en proyectos/[slug].astro:
+ *   <CtaBand
+ *     label="¿Proyecto similar?"
+ *     title="¿Tienes un proyecto que requiere nuestra experiencia?"
+ *     description="Contamos con el equipo y la metodología..."
+ *     primaryHref="/contacto"
+ *     primaryLabel="Solicitar propuesta"
+ *     secondaryHref="/proyectos"
+ *     secondaryLabel="Ver todos los proyectos"
+ *   />
+ */
+
+interface Props {
+  label: string;
+  title: string;
+  description?: string;
+  primaryHref: string;
+  primaryLabel: string;
+  secondaryHref?: string;
+  secondaryLabel?: string;
+}
+
+const {
+  label,
+  title,
+  description,
+  primaryHref,
+  primaryLabel,
+  secondaryHref,
+  secondaryLabel,
+} = Astro.props;
+---
+
+<section class="sec sec--dark">
+  <div class="container">
+    <div class="sh sh--center sh--medium">
+      <p class="sh-label">{label}</p>
+      <h2 class="sh-title" set:html={title} />
+      {description && <p class="sh-desc">{description}</p>}
+    </div>
+    <div class="cta-band-actions">
+      <a href={primaryHref} class="btn btn-primary btn-lg">
+        {primaryLabel}
+        <!-- SVG inline: send -->
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+      </a>
+      {secondaryHref && secondaryLabel && (
+        <a href={secondaryHref} class="btn btn-outline-light btn-lg">
+          {secondaryLabel}
+          <!-- SVG inline: arrow-right -->
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+        </a>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-band-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 36px;
+  }
+</style>

@@ -2,6 +2,8 @@
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
 
 type Proyecto = CollectionEntry<'proyectos'>;
 
@@ -9,43 +11,38 @@ export async function getStaticPaths() {
   const proyectos = await getCollection('proyectos');
   return proyectos.map((proyecto: Proyecto) => ({
     params: { slug: proyecto.id },
-    props:  { proyecto },
+    // Colección completa como prop — evita segunda llamada getCollection()
+    props: { proyecto, todosProyectos: proyectos },
   }));
 }
 
 interface Props {
   proyecto: Proyecto;
+  todosProyectos: Proyecto[];
 }
 
-const { proyecto } = Astro.props;
+const { proyecto, todosProyectos } = Astro.props;
 const { Content } = await render(proyecto);
 const { titulo, ubicacion, categoria, año, imagen, galeria = [] } = proyecto.data;
 
-// Proyectos relacionados — misma categoría
-const todosProyectos = await getCollection('proyectos');
 const relacionados = todosProyectos
-  .filter((p: Proyecto) => p.id !== proyecto.id && p.data.categoria === categoria)
+  .filter((p) => p.id !== proyecto.id && p.data.categoria === categoria)
   .slice(0, 3);
 ---
 
-<BaseLayout titulo={titulo} descripcion={`${categoria} en ${ubicacion} — ${año}`}>
+<BaseLayout
+  title={`${titulo} | INACONS`}
+  description={`${categoria} en ${ubicacion} — ${año}`}
+>
 
-  <!-- HERO -->
-  <section class="page-hero">
-    <div class="page-hero-bg" style={`background-image: url('${imagen}')`}></div>
-    <div class="page-hero-overlay"></div>
-    <div class="page-hero-content">
-      <nav class="breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Inicio</a>
-        <span class="breadcrumb-sep">›</span>
-        <a href="/proyectos">Proyectos</a>
-        <span class="breadcrumb-sep">›</span>
-        <span class="breadcrumb-current">{titulo}</span>
-      </nav>
-      <h1 class="page-hero-title">{titulo}</h1>
-      <p class="page-hero-subtitle">{ubicacion} — {año}</p>
-    </div>
-  </section>
+  <PageHero
+    image={imagen}
+    title={titulo}
+    subtitle={`${ubicacion} — ${año}`}
+    parent={{ label: 'Proyectos', href: '/proyectos' }}
+    current={titulo}
+    size="md"
+  />
 
   <!-- CONTENIDO -->
   <section class="sec sec--white">
@@ -55,17 +52,15 @@ const relacionados = todosProyectos
         <!-- Columna principal -->
         <div class="proyecto-body" data-aos="fade-up">
 
-          <!-- Badge de categoría -->
           <span class="proyecto-badge">{categoria}</span>
 
-          <!-- Contenido del .md -->
           <Content />
 
-          <!-- Galería de fotos -->
+          <!-- Galería -->
           {galeria.length > 0 && (
             <div class="galeria">
               <div class="galeria-principal">
-                <img src={galeria[0]} alt={`${titulo} — foto 1`} loading="lazy" />
+                <img src={galeria[0]} alt={`${titulo} — foto principal`} loading="lazy" />
               </div>
               {galeria.length > 1 && (
                 <div class="galeria-thumbs">
@@ -81,7 +76,7 @@ const relacionados = todosProyectos
 
           <a href="/contacto" class="btn btn-primary">
             Consultar proyecto similar
-            <i data-lucide="arrow-right" style={{ width: "15px", height: "15px" }}></i>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
 
@@ -108,8 +103,8 @@ const relacionados = todosProyectos
           {relacionados.length > 0 && (
             <div class="aside-card" data-aos="fade-left" data-aos-delay="100">
               <p class="aside-card-title">Proyectos relacionados</p>
-              <nav>
-                {relacionados.map((p: Proyecto) => (
+              <nav aria-label="Proyectos relacionados">
+                {relacionados.map((p) => (
                   <a href={`/proyectos/${p.id}`} class="related-link">
                     <div class="related-thumb">
                       <img src={p.data.imagen} alt={p.data.titulo} loading="lazy" />
@@ -129,29 +124,15 @@ const relacionados = todosProyectos
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="sec sec--dark">
-    <div class="container">
-      <div class="sh sh--center sh--medium">
-        <p class="sh-label">¿Proyecto similar?</p>
-        <h2 class="sh-title">¿Tienes un proyecto que requiere nuestra experiencia?</h2>
-        <p class="sh-desc">
-          Contamos con el equipo y la metodología para llevar
-          tu proyecto al más alto nivel de calidad.
-        </p>
-      </div>
-      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:36px;">
-        <a href="/contacto" class="btn btn-primary btn-lg">
-          Solicitar propuesta
-          <i data-lucide="send" style={{ width: "15px", height: "15px" }}></i>
-        </a>
-        <a href="/proyectos" class="btn btn-outline-light btn-lg">
-          Ver todos los proyectos
-          <i data-lucide="arrow-right" style={{ width: "15px", height: "15px" }}></i>
-        </a>
-      </div>
-    </div>
-  </section>
+  <CtaBand
+    label="¿Proyecto similar?"
+    title="¿Tienes un proyecto que requiere nuestra experiencia?"
+    description="Contamos con el equipo y la metodología para llevar tu proyecto al más alto nivel de calidad."
+    primaryHref="/contacto"
+    primaryLabel="Solicitar propuesta"
+    secondaryHref="/proyectos"
+    secondaryLabel="Ver todos los proyectos"
+  />
 
 </BaseLayout>
 
@@ -163,7 +144,6 @@ const relacionados = todosProyectos
     align-items: start;
   }
 
-  /* Badge */
   .proyecto-badge {
     display: inline-flex;
     align-items: center;
@@ -180,22 +160,21 @@ const relacionados = todosProyectos
     margin-bottom: 24px;
   }
 
-  /* Contenido del .md */
-  .proyecto-body h2 {
+  .proyecto-body :global(h2) {
     font-size: clamp(1.3rem, 2.2vw, 1.7rem);
     font-weight: 700;
     color: var(--c-text-heading);
     margin: 32px 0 16px;
   }
 
-  .proyecto-body p {
+  .proyecto-body :global(p) {
     font-size: 0.975rem;
     line-height: 1.85;
     color: var(--c-text-body);
     margin-bottom: 18px;
   }
 
-  .proyecto-body ul {
+  .proyecto-body :global(ul) {
     list-style: none;
     padding: 0;
     margin: 0 0 28px;
@@ -204,7 +183,7 @@ const relacionados = todosProyectos
     gap: 10px;
   }
 
-  .proyecto-body ul li {
+  .proyecto-body :global(li) {
     display: flex;
     align-items: flex-start;
     gap: 10px;
@@ -212,7 +191,7 @@ const relacionados = todosProyectos
     color: var(--c-text-body);
   }
 
-  .proyecto-body ul li::before {
+  .proyecto-body :global(li)::before {
     content: '';
     width: 6px;
     height: 6px;
@@ -298,7 +277,6 @@ const relacionados = todosProyectos
     margin-bottom: 16px;
   }
 
-  /* Ficha técnica */
   .ficha { display: flex; flex-direction: column; }
 
   .ficha-item {
@@ -325,7 +303,6 @@ const relacionados = todosProyectos
     color: var(--c-text-heading);
   }
 
-  /* Relacionados */
   .related-link {
     display: flex;
     align-items: center;
@@ -371,7 +348,6 @@ const relacionados = todosProyectos
     margin-top: 2px;
   }
 
-  /* Responsive */
   @media (max-width: 1023px) {
     .proyecto-layout { grid-template-columns: 1fr; gap: 48px; }
     .proyecto-aside  { position: static; }

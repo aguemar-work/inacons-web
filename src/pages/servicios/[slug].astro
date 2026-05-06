@@ -2,6 +2,8 @@
 import { getCollection, render } from 'astro:content';
 import type { CollectionEntry } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
 
 type Servicio = CollectionEntry<'servicios'>;
 
@@ -9,43 +11,36 @@ export async function getStaticPaths() {
   const servicios = await getCollection('servicios');
   return servicios.map((servicio: Servicio) => ({
     params: { slug: servicio.id },
-    props:  { servicio },
+    // Pasamos la colección completa como prop para evitar
+    // una segunda llamada a getCollection() dentro de la página.
+    props: { servicio, todosServicios: servicios },
   }));
 }
 
 interface Props {
   servicio: Servicio;
-
+  todosServicios: Servicio[];
 }
 
-const { servicio } = Astro.props;
+const { servicio, todosServicios } = Astro.props;
 const { Content } = await render(servicio);
 const { titulo, descripcion, imagen, especialidades } = servicio.data;
 
-const todosServicios = await getCollection('servicios');
 const otrosServicios = todosServicios
-  .filter((s: Servicio) => s.id !== servicio.id)
-  .sort((a: Servicio, b: Servicio) => (a.data.orden ?? 99) - (b.data.orden ?? 99));
+  .filter((s) => s.id !== servicio.id)
+  .sort((a, b) => (a.data.orden ?? 99) - (b.data.orden ?? 99));
 ---
 
-<BaseLayout titulo={titulo} descripcion={descripcion}>
+<BaseLayout title={`${titulo} | INACONS`} description={descripcion}>
 
-  <!-- HERO -->
-  <section class="page-hero">
-    <div class="page-hero-bg" style={`background-image: url('${imagen}')`}></div>
-    <div class="page-hero-overlay"></div>
-    <div class="page-hero-content">
-      <nav class="breadcrumb" aria-label="Breadcrumb">
-        <a href="/">Inicio</a>
-        <span class="breadcrumb-sep">›</span>
-        <a href="/servicios">Operaciones</a>
-        <span class="breadcrumb-sep">›</span>
-        <span class="breadcrumb-current">{titulo}</span>
-      </nav>
-      <h1 class="page-hero-title">{titulo}</h1>
-      <p class="page-hero-subtitle">{descripcion}</p>
-    </div>
-  </section>
+  <PageHero
+    image={imagen}
+    title={titulo}
+    subtitle={descripcion}
+    parent={{ label: 'Operaciones', href: '/servicios' }}
+    current={titulo}
+    size="md"
+  />
 
   <!-- CONTENIDO -->
   <section class="sec sec--white">
@@ -67,31 +62,31 @@ const otrosServicios = todosServicios
 
           <a href="/contacto" class="btn btn-primary">
             Solicitar cotización
-            <i data-lucide="arrow-right" style={{ width: "15px", height: "15px" }}></i>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
 
         <!-- Aside -->
         <aside class="service-aside">
-          {/* Descomentar cuando el PDF esté disponible en /public/assets/documentos/brochure_inacons.pdf
+          <!-- Descarga del brochure -->
           <div class="aside-card">
             <p class="aside-card-title">Descargas</p>
             <div class="download-list">
-              <a href="/assets/documentos/brochure_inacons.pdf" target="_blank" class="download-item">
-                <i data-lucide="file-text" style={{ width: "18px", height: "18px" }}></i>
+              <a href="/assets/documentos/brochure_inacons.pdf" data-brochure-trigger="true" class="download-item">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg>
                 Brochure General
               </a>
             </div>
           </div>
-          */}
 
+          <!-- Otros servicios -->
           <div class="aside-card">
             <p class="aside-card-title">Otros servicios</p>
-            <nav class="other-services">
-              {otrosServicios.map((s: Servicio) => (
+            <nav class="other-services" aria-label="Otros servicios">
+              {otrosServicios.map((s) => (
                 <a href={`/servicios/${s.id}`} class="other-service-link">
                   {s.data.titulo}
-                  <i data-lucide="chevron-right" style={{ width: "14px", height: "14px" }}></i>
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg>
                 </a>
               ))}
             </nav>
@@ -102,29 +97,15 @@ const otrosServicios = todosServicios
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="sec sec--dark">
-    <div class="container">
-      <div class="sh sh--center sh--medium">
-        <p class="sh-label">¿Listo para iniciar?</p>
-        <h2 class="sh-title">¿Tienes un proyecto de {titulo}?</h2>
-        <p class="sh-desc">
-          Nuestro equipo técnico está disponible para asesorarte
-          y presentarte una propuesta sin compromiso.
-        </p>
-      </div>
-      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:36px;">
-        <a href="/contacto" class="btn btn-primary btn-lg">
-          Contactar ahora
-          <i data-lucide="send" style={{ width: "15px", height: "15px" }}></i>
-        </a>
-        <a href="/proyectos" class="btn btn-outline-light btn-lg">
-          Ver proyectos
-          <i data-lucide="arrow-right" style={{ width: "14px", height: "14px" }}></i>
-        </a>
-      </div>
-    </div>
-  </section>
+  <CtaBand
+    label="¿Listo para iniciar?"
+    title={`¿Tienes un proyecto de ${titulo}?`}
+    description="Nuestro equipo técnico está disponible para asesorarte y presentarte una propuesta sin compromiso."
+    primaryHref="/contacto"
+    primaryLabel="Contactar ahora"
+    secondaryHref="/proyectos"
+    secondaryLabel="Ver proyectos"
+  />
 
 </BaseLayout>
 
@@ -136,7 +117,7 @@ const otrosServicios = todosServicios
     align-items: start;
   }
 
-  .service-body h2 {
+  .service-body :global(h2) {
     font-size: clamp(1.3rem, 2.2vw, 1.7rem);
     font-weight: 700;
     color: var(--c-text-heading);
@@ -144,14 +125,14 @@ const otrosServicios = todosServicios
     margin-top: 32px;
   }
 
-  .service-body p {
+  .service-body :global(p) {
     font-size: 0.975rem;
     line-height: 1.85;
     color: var(--c-text-body);
     margin-bottom: 20px;
   }
 
-  .service-body ul {
+  .service-body :global(ul) {
     list-style: none;
     padding: 0;
     margin: 0 0 28px;
@@ -160,7 +141,7 @@ const otrosServicios = todosServicios
     gap: 10px 24px;
   }
 
-  .service-body ul li {
+  .service-body :global(li) {
     display: flex;
     align-items: flex-start;
     gap: 10px;
@@ -169,7 +150,7 @@ const otrosServicios = todosServicios
     line-height: 1.5;
   }
 
-  .service-body ul li::before {
+  .service-body :global(li)::before {
     content: '';
     width: 6px;
     height: 6px;
@@ -225,7 +206,7 @@ const otrosServicios = todosServicios
     font-size: 0.82rem;
     font-weight: 600;
     color: var(--c-text-heading);
-    transition: border-color var(--t), background var(--t);
+    transition: border-color var(--t), background var(--t), color var(--t);
   }
 
   .download-item:hover {
@@ -270,6 +251,6 @@ const otrosServicios = todosServicios
 
   @media (max-width: 768px) {
     .service-aside { grid-template-columns: 1fr; }
-    .service-body ul { grid-template-columns: 1fr; }
+    .service-body :global(ul) { grid-template-columns: 1fr; }
   }
 </style>
