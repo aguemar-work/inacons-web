@@ -1,18 +1,59 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+
+Astro.response.status = 404;
+
+const canonicalHome = Astro.site ? new URL('/', Astro.site).href : 'https://inacons.com.pe/';
 ---
 
-<BaseLayout title="Página no encontrada" description="La página que buscas no existe o fue movida.">
-
+<BaseLayout
+  title="Página no encontrada | INACONS"
+  description="La página que buscas no existe o fue movida."
+  canonical={canonicalHome}
+  robots="noindex, nofollow"
+  minimalChrome
+>
   <style slot="head">
-    .error-section {
-      min-height: 80vh;
+    html.layout-minimal {
+      min-height: 100dvh;
+      height: 100%;
       display: flex;
+      flex-direction: column;
+    }
+
+    html.layout-minimal body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      margin: 0;
+      min-height: 0;
+      width: 100%;
+    }
+
+    html.layout-minimal .main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+      max-width: none;
+      min-height: 0;
+      margin: 0;
+      padding: 0;
+    }
+
+    .error-section {
+      flex: 1 0 auto;
+      width: 100%;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       background: var(--c-bg-muted);
       position: relative;
       overflow: hidden;
+      box-sizing: border-box;
+      padding: clamp(24px, 5vw, 48px) 20px;
     }
 
     .error-section::before {
@@ -20,31 +61,61 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       position: absolute;
       font-size: clamp(12rem, 30vw, 22rem);
       font-weight: 800;
-      color: rgba(20,23,45,0.04);
+      color: rgba(20, 23, 45, 0.045);
       line-height: 1;
       pointer-events: none;
       user-select: none;
-      letter-spacing: -8px;
+      letter-spacing: -0.04em;
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .error-section::before {
+        opacity: 0.35;
+      }
+    }
+
+    .error-logo {
+      margin-bottom: clamp(24px, 4vw, 40px);
+      z-index: 1;
+    }
+
+    .error-logo img {
+      height: 32px;
+      width: auto;
+      display: block;
+      opacity: 0.85;
+      transition: opacity 0.2s ease;
+    }
+
+    .error-logo:hover img,
+    .error-logo:focus-visible img {
+      opacity: 1;
+    }
+
+    .error-logo:focus-visible {
+      outline: 2px solid var(--c-secondary);
+      outline-offset: 4px;
+      border-radius: 2px;
     }
 
     .error-content {
       text-align: center;
       position: relative;
       z-index: 1;
-      padding: 40px 20px;
       max-width: 560px;
+      width: 100%;
     }
 
     .error-label {
       font-size: 0.68rem;
       font-weight: 700;
-      letter-spacing: 3px;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--c-secondary);
-      margin-bottom: 20px;
+      margin-bottom: 1.25rem;
       display: block;
     }
 
@@ -53,15 +124,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       font-weight: 800;
       color: var(--c-text-heading);
       line-height: 1.15;
-      margin-bottom: 20px;
-      letter-spacing: -0.5px;
+      margin: 0 0 1.25rem;
+      letter-spacing: -0.03em;
     }
 
     .error-desc {
       font-size: 0.95rem;
       color: var(--c-text-muted);
-      line-height: 1.8;
-      margin-bottom: 40px;
+      line-height: 1.75;
+      margin: 0 0 2.5rem;
     }
 
     .error-actions {
@@ -71,19 +142,29 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       flex-wrap: wrap;
     }
 
+    .error-actions .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .error-actions .btn svg {
+      flex-shrink: 0;
+    }
+
     .error-links {
-      margin-top: 56px;
-      padding-top: 40px;
+      margin-top: 3.5rem;
+      padding-top: 2.5rem;
       border-top: 1px solid var(--c-border-light);
     }
 
-    .error-links p {
+    .error-links > p {
       font-size: 0.78rem;
       font-weight: 700;
-      letter-spacing: 1.5px;
+      letter-spacing: 0.12em;
       text-transform: uppercase;
       color: var(--c-text-muted);
-      margin-bottom: 20px;
+      margin: 0 0 1.25rem;
     }
 
     .error-links-grid {
@@ -96,44 +177,64 @@ import BaseLayout from '../layouts/BaseLayout.astro';
     .error-link-item {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
       padding: 8px 18px;
-      font-size: 0.80rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: var(--c-text-heading);
       border: 1.5px solid var(--c-border-light);
       border-radius: 2px;
       text-decoration: none;
-      transition: border-color .2s, color .2s, background .2s;
+      transition: border-color 0.2s, color 0.2s, background 0.2s;
     }
 
     .error-link-item:hover {
       border-color: var(--c-secondary);
       color: var(--c-secondary);
-      background: rgba(27,82,120,0.04);
+      background: rgba(27, 82, 120, 0.04);
+    }
+
+    .error-link-item:focus-visible {
+      outline: 2px solid var(--c-secondary);
+      outline-offset: 2px;
     }
   </style>
 
-  <section class="error-section">
-    <div class="error-content" data-aos="fade-up">
+  <section class="error-section" aria-labelledby="error-heading">
+    <a href="/" class="error-logo">
+      <img
+        src="/assets/imagenes/logos/logo_inacons.svg"
+        width="120"
+        height="32"
+        alt="INACONS"
+        decoding="async"
+      />
+    </a>
+
+    <div class="error-content" data-aos="fade-up" data-aos-duration="600">
       <span class="error-label">Error 404</span>
-      <h1 class="error-title">Esta página<br>no existe</h1>
+      <h1 id="error-heading" class="error-title">Esta página<br />no existe</h1>
       <p class="error-desc">
         La URL que ingresaste no fue encontrada. Puede que haya sido movida,
         eliminada o que hayas escrito mal la dirección.
       </p>
       <div class="error-actions">
         <a href="/" class="btn btn-primary">
-          <i data-lucide="home" style={{ width: "15px", height: "15px" }}></i>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+            <polyline points="9 22 9 12 15 12 15 22" />
+          </svg>
           Ir al inicio
         </a>
         <a href="/contacto" class="btn btn-outline">
-          <i data-lucide="mail" style={{ width: "15px", height: "15px" }}></i>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <rect width="20" height="16" x="2" y="4" rx="2" />
+            <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+          </svg>
           Contáctenos
         </a>
       </div>
 
-      <div class="error-links">
+      <nav class="error-links" aria-label="Enlaces útiles">
         <p>O visita una de estas páginas</p>
         <div class="error-links-grid">
           <a href="/nosotros" class="error-link-item">Nosotros</a>
@@ -141,9 +242,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
           <a href="/proyectos" class="error-link-item">Proyectos</a>
           <a href="/documentos" class="error-link-item">Documentos</a>
           <a href="/sostenibilidad" class="error-link-item">Sostenibilidad</a>
+          <a href="/canal-etico" class="error-link-item">Canal ético</a>
         </div>
-      </div>
+      </nav>
     </div>
   </section>
-
 </BaseLayout>

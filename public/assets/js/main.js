@@ -1,14 +1,10 @@
 /*
   main.js — INACONS v4.0
   ─────────────────────────────────────────────────────────────────
-  Cambios respecto a la versión anterior:
-  · Eliminado: Lucide UMD (reemplazado por SVG inline en HTML)
-  · Eliminado: AOS init (reemplazado por IntersectionObserver nativo)
-  · Eliminado: initializeClientsAbout (no existe ese elemento en el HTML)
-  · Eliminado: email.js / EmailJS (usar Formspree como el resto del sitio)
-  · Mantenido: mobile menu, header scroll, back-to-top, typewriter,
-               counter animation, gated brochure, clients carousel
-  · Cargado con defer — nunca bloquea el parser HTML
+  · Sin Lucide UMD (iconos SVG inline en HTML)
+  · Animaciones scroll: IntersectionObserver (data-aos)
+  · Menú móvil + acordeón Operaciones, Swiper si existe
+  · Cargado con defer
 */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -115,23 +111,50 @@ document.addEventListener('DOMContentLoaded', function () {
     obs.observe(wrap);
   }
 
-  /* ─── 4. MENÚ MÓVIL ─── */
+  /* ─── 4. MENÚ MÓVIL (+ acordeón Operaciones) ─── */
   function initMobileMenu() {
-    const toggle  = document.getElementById('menuToggle');
-    const menu    = document.getElementById('mobileMenu');
-    const close   = document.getElementById('mobileMenuClose');
+    const toggle = document.getElementById('menuToggle');
+    const menu   = document.getElementById('mobileMenu');
+    const close  = document.getElementById('mobileMenuClose');
     if (!toggle || !menu) return;
 
-    function open()  { menu.classList.add('active');    toggle.setAttribute('aria-expanded', 'true'); }
-    function shut()  { menu.classList.remove('active'); toggle.setAttribute('aria-expanded', 'false'); }
+    function resetDropdowns() {
+      menu.querySelectorAll('.mobile-dropdown').forEach((drop) => {
+        drop.classList.remove('open');
+        drop.querySelector('.mobile-dropdown-toggle')?.setAttribute('aria-expanded', 'false');
+      });
+    }
+
+    function open() {
+      menu.classList.add('active');
+      toggle.setAttribute('aria-expanded', 'true');
+      resetDropdowns();
+    }
+
+    function shut() {
+      menu.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+      resetDropdowns();
+    }
 
     toggle.addEventListener('click', open);
     close?.addEventListener('click', shut);
     menu.querySelector('.mobile-menu-overlay')?.addEventListener('click', shut);
     menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', shut));
 
-    // Cierra con Escape
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') shut(); });
+    menu.querySelectorAll('.mobile-dropdown').forEach((drop) => {
+      const btn = drop.querySelector('.mobile-dropdown-toggle');
+      if (!btn) return;
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const isOpen = drop.classList.toggle('open');
+        btn.setAttribute('aria-expanded', String(isOpen));
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && menu.classList.contains('active')) shut();
+    });
   }
 
   /* ─── 5. HEADER SCROLL (hide/show + scrolled) ─── */
@@ -198,10 +221,11 @@ document.addEventListener('DOMContentLoaded', function () {
   function initResponsive() {
     const header = document.getElementById('header');
     const main   = document.querySelector('.main');
+    if (!header) return;
 
     function adjust() {
       const desktop = window.innerWidth >= 768;
-      header?.classList.toggle('with-topbar', desktop);
+      header.classList.toggle('with-topbar', desktop);
       main?.classList.toggle('with-topbar', desktop);
     }
 
@@ -224,84 +248,6 @@ document.addEventListener('DOMContentLoaded', function () {
     track.addEventListener('touchend',   () => setTimeout(resume, 500), { passive: true });
   }
 
-  /* ─── 10. GATED BROCHURE MODAL ─── */
-  function initGatedBrochure() {
-    const BROCHURE_URL = '/assets/documentos/brochure_inacons.pdf';
-    const triggers = document.querySelectorAll('a[href$="brochure_inacons.pdf"], [data-brochure-trigger]');
-    if (!triggers.length) return;
-
-    // Crear modal solo si hay triggers en la página
-    if (!document.getElementById('brochure-modal')) {
-      document.body.insertAdjacentHTML('beforeend', `
-        <div id="brochure-modal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.6);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(4px);">
-          <div style="background:#fff;border-radius:12px;padding:40px;max-width:440px;width:90%;position:relative;box-shadow:0 25px 50px -12px rgba(0,0,0,0.25);">
-            <button id="brochure-close" style="position:absolute;top:16px;right:16px;background:none;border:none;font-size:24px;cursor:pointer;color:#999;" aria-label="Cerrar">&times;</button>
-            <h3 style="margin:0 0 10px;font-size:22px;color:var(--c-primary);">Descarga el Brochure</h3>
-            <p style="margin:0 0 24px;font-size:14px;color:#666;line-height:1.5;">Completa tus datos para recibir nuestro portafolio técnico actualizado.</p>
-            <form id="brochure-form" action="https://formspree.io/f/mdapkgog" method="POST">
-              <input type="hidden" name="_subject" value="Nueva descarga de Brochure — INACONS" />
-              <div style="margin-bottom:12px;">
-                <input type="text" name="nombre" placeholder="Nombre completo" required style="width:100%;padding:12px;border:1px solid #ddd;border-radius:6px;font-size:14px;box-sizing:border-box;" />
-              </div>
-              <div style="margin-bottom:20px;">
-                <input type="email" name="email" placeholder="Correo corporativo" required style="width:100%;padding:12px;border:1px solid #ddd;border-radius:6px;font-size:14px;box-sizing:border-box;" />
-              </div>
-              <button type="submit" id="brochure-submit" style="width:100%;padding:14px;background:#f26500;color:#fff;border:none;border-radius:6px;font-size:15px;cursor:pointer;font-weight:600;">Descargar Ahora</button>
-            </form>
-            <p id="brochure-success" style="display:none;color:green;text-align:center;margin-top:16px;font-weight:500;">¡Gracias! Tu descarga comenzará en breve.</p>
-          </div>
-        </div>
-      `);
-    }
-
-    const modal   = document.getElementById('brochure-modal');
-    const form    = document.getElementById('brochure-form');
-    const closeBtn = document.getElementById('brochure-close');
-    const success  = document.getElementById('brochure-success');
-    const submitBtn = document.getElementById('brochure-submit');
-
-    const openModal  = (e) => { e.preventDefault(); modal.style.display = 'flex'; };
-    const closeModal = () => { modal.style.display = 'none'; };
-
-    triggers.forEach((t) => t.addEventListener('click', openModal));
-    closeBtn.addEventListener('click', closeModal);
-    modal.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-    document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'Enviando...';
-
-      try {
-        const res = await fetch(form.action, {
-          method: 'POST',
-          body: new FormData(form),
-          headers: { Accept: 'application/json' },
-        });
-        if (res.ok) {
-          success.style.display = 'block';
-          form.style.display = 'none';
-          setTimeout(() => {
-            window.open(BROCHURE_URL, '_blank');
-            setTimeout(() => {
-              closeModal();
-              form.style.display = 'block';
-              success.style.display = 'none';
-              form.reset();
-              submitBtn.disabled = false;
-              submitBtn.textContent = 'Descargar Ahora';
-            }, 500);
-          }, 1400);
-        }
-      } catch {
-        alert('Error de conexión. Inténtalo de nuevo.');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Descargar Ahora';
-      }
-    });
-  }
-
   /* ─── INIT ─── */
   initScrollAnimations();
   initTypewriter();
@@ -312,7 +258,6 @@ document.addEventListener('DOMContentLoaded', function () {
   initSmoothScroll();
   initResponsive();
   initClientsCarousel();
-  initGatedBrochure();
 
 });
 

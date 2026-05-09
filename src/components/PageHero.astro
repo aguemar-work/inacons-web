@@ -30,7 +30,7 @@
  *   bgPosition — background-position CSS (default "center")
  */
 
-interface BreadcrumbItem {
+ interface BreadcrumbItem {
   label: string;
   href: string;
 }
@@ -54,7 +54,27 @@ const {
   size = 'sm',
   bgPosition = 'center',
 } = Astro.props;
+const BASE = 'https://inacons.com.pe';
+
+// Construir items del breadcrumb para JSON-LD
+const breadcrumbItems = [
+  { name: 'Inicio', href: '/' },
+  ...(parent ? [{ name: parent.label, href: parent.href }] : []),
+  { name: current, href: Astro.url.pathname },
+];
 ---
+
+<!-- JSON-LD: BreadcrumbList para esta página -->
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": breadcrumbItems.map((item, i) => ({
+    "@type": "ListItem",
+    "position": i + 1,
+    "name": item.name,
+    "item": `${BASE}${item.href}`
+  }))
+})} />
 
 <section class={`page-hero${size === 'sm' ? ' page-hero--sm' : ''}`}>
   <div

@@ -1,0 +1,796 @@
+---
+import { getCollection } from 'astro:content';
+import type { CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+
+type Recurso = CollectionEntry<'recursos'>;
+
+/** Base donde resuelve cada QR del backend de empresa. */
+const QR_BASE = 'https://home.inacons.com.pe/empresa/';
+
+/** Origen del sitio (build / dev) para enlaces absolutos en «Copiar». */
+const SITE_ORIGIN = (import.meta.env.SITE || 'https://inacons.com.pe').replace(/\/$/, '');
+
+/** Categorías en el orden que aparecen en los filtros. */
+const CATEGORIAS = [
+  { id: 'todos',         label: 'Todos'          },
+  { id: 'logo',          label: 'Logos'          },
+  { id: 'flyer-impreso', label: 'Flyers Impresos' },
+  { id: 'flyer-digital', label: 'Flyers Digitales' },
+  { id: 'documento',     label: 'Documentos'     },
+] as const;
+
+/** Etiqueta corta usada en el badge de cada tarjeta. */
+const BADGE_LABEL: Record<string, string> = {
+  'logo':          'Logo',
+  'flyer-impreso': 'Impreso',
+  'flyer-digital': 'Digital',
+  'documento':     'Documento',
+};
+
+/** Formatos cuya `imagen` se puede mostrar como vista previa visual. */
+const PREVIEW_FORMATS = new Set(['PNG', 'SVG', 'JPG', 'JPEG', 'WEBP', 'GIF', 'AVIF']);
+
+const recursos = await getCollection('recursos');
+recursos.sort((a: Recurso, b: Recurso) => (a.data.orden ?? 99) - (b.data.orden ?? 99));
+
+// Conteos por categoría — se renderizan junto al filtro.
+const conteo: Record<string, number> = { todos: recursos.length };
+for (const r of recursos) {
+  conteo[r.data.categoria] = (conteo[r.data.categoria] ?? 0) + 1;
+}
+---
+
+<BaseLayout
+  title="Recursos de marca | INACONS"
+  description="Brand hub de INACONS — logos, flyers, documentos y materiales oficiales para uso interno y comunicaciones."
+  robots="noindex, follow"
+>
+  <style slot="head">
+    /* ─────────────────────────────────────────────────────────
+       BARRA DE CONTROLES (búsqueda + filtros + contador)
+       ───────────────────────────────────────────────────────── */
+    .recursos-toolbar {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 16px 24px;
+      align-items: center;
+      margin-bottom: 32px;
+    }
+    .recursos-search {
+      position: relative;
+      max-width: 360px;
+    }
+    .recursos-search input {
+      width: 100%;
+      padding: 11px 14px 11px 38px;
+      font: inherit;
+      font-size: 0.85rem;
+      color: var(--c-text-heading);
+      background: var(--c-bg-white);
+      border: 1.5px solid var(--c-border);
+      border-radius: 2px;
+      transition: border-color .2s, box-shadow .2s;
+    }
+    .recursos-search input:focus {
+      outline: none;
+      border-color: var(--c-secondary);
+      box-shadow: 0 0 0 3px rgba(27,82,120,0.12);
+    }
+    .recursos-search svg {
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--c-text-muted);
+      pointer-events: none;
+    }
+    .recursos-count {
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--c-text-muted);
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      justify-self: end;
+    }
+    .recursos-count strong {
+      color: var(--c-text-heading);
+      font-weight: 800;
+    }
+
+    .filtros {
+      grid-column: 1 / -1;
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      padding-top: 20px;
+      border-top: 1px solid var(--c-border-light);
+    }
+    .filtro-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 9px 16px;
+      font-family: var(--font-ui);
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      color: var(--c-text-muted);
+      background: var(--c-bg-white);
+      border: 1.5px solid var(--c-border);
+      border-radius: 100px;
+      cursor: pointer;
+      transition: color .2s, border-color .2s, background .2s;
+    }
+    .filtro-btn:hover {
+      color: var(--c-secondary);
+      border-color: var(--c-secondary);
+    }
+    .filtro-btn.active {
+      color: #fff;
+      background: var(--c-secondary);
+      border-color: var(--c-secondary);
+    }
+    .filtro-btn .filtro-num {
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 1px 7px;
+      border-radius: 100px;
+      background: var(--c-bg-muted);
+      color: var(--c-text-muted);
+      transition: background .2s, color .2s;
+    }
+    .filtro-btn.active .filtro-num {
+      background: rgba(255,255,255,0.18);
+      color: #fff;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       INTRO
+       ───────────────────────────────────────────────────────── */
+    .recursos-intro {
+      max-width: 680px;
+      margin-bottom: 36px;
+    }
+    .recursos-intro p {
+      font-size: 0.93rem;
+      color: var(--c-text-muted);
+      line-height: 1.85;
+      margin: 0;
+    }
+    .recursos-intro a {
+      color: var(--c-secondary);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       GRID + TARJETA
+       ───────────────────────────────────────────────────────── */
+    .recursos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 24px;
+    }
+
+    .recurso-card {
+      background: var(--c-bg-white);
+      border: 1px solid var(--c-border-light);
+      border-radius: 2px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: box-shadow .25s, transform .25s, border-color .25s;
+    }
+    .recurso-card:hover {
+      box-shadow: var(--shadow-card-hover);
+      border-color: var(--c-border);
+      transform: translateY(-3px);
+    }
+    .recurso-card.is-hidden { display: none; }
+
+    .recurso-preview {
+      position: relative;
+      aspect-ratio: 4/3;
+      background: var(--c-bg-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+    .recurso-preview img {
+      max-width: 100%;
+      max-height: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
+      padding: 16px;
+      transition: transform .35s ease;
+    }
+    .recurso-card:hover .recurso-preview img { transform: scale(1.04); }
+
+    .recurso-preview--file {
+      background: linear-gradient(145deg, var(--c-bg-muted) 0%, rgba(27,82,120,0.08) 100%);
+    }
+    .recurso-file-badge {
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: var(--c-secondary);
+      padding: 14px 22px;
+      border: 2px dashed var(--c-border);
+      border-radius: 4px;
+    }
+
+    .recurso-badge {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      background: var(--c-primary);
+      color: #fff;
+      font-size: 0.60rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 4px 9px;
+      border-radius: 2px;
+    }
+
+    .recurso-body {
+      padding: 18px 20px 20px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    .recurso-titulo {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: var(--c-text-heading);
+      margin: 0 0 4px;
+      line-height: 1.35;
+    }
+    .recurso-meta {
+      font-size: 0.74rem;
+      color: var(--c-text-muted);
+      margin: 0 0 16px;
+    }
+
+    .recurso-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-top: auto;
+    }
+    .recurso-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      font-family: var(--font-ui);
+      font-size: 0.70rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      border-radius: 2px;
+      cursor: pointer;
+      transition: background .2s, color .2s, border-color .2s;
+      text-decoration: none;
+      border: 1.5px solid transparent;
+      white-space: nowrap;
+      line-height: 1;
+    }
+    .recurso-btn--primary {
+      background: var(--c-secondary);
+      color: #fff;
+      border-color: var(--c-secondary);
+    }
+    .recurso-btn--primary:hover {
+      background: var(--c-primary);
+      border-color: var(--c-primary);
+    }
+    .recurso-btn--outline {
+      background: transparent;
+      color: var(--c-secondary);
+      border-color: var(--c-secondary);
+    }
+    .recurso-btn--outline:hover { background: var(--c-secondary); color: #fff; }
+    .recurso-btn--ghost {
+      background: transparent;
+      color: var(--c-text-muted);
+      border-color: var(--c-border);
+    }
+    .recurso-btn--ghost:hover { border-color: var(--c-secondary); color: var(--c-secondary); }
+
+    /* ─────────────────────────────────────────────────────────
+       MODAL QR
+       ───────────────────────────────────────────────────────── */
+    .qr-modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(20,23,45,0.55);
+      z-index: 1100;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      backdrop-filter: blur(3px);
+    }
+    .qr-modal-overlay.open { display: flex; }
+    .qr-modal {
+      background: #fff;
+      border-radius: 4px;
+      padding: 40px 36px 32px;
+      max-width: 400px;
+      width: 100%;
+      text-align: center;
+      position: relative;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+    .qr-modal-close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--c-text-muted);
+      padding: 6px;
+      border-radius: 2px;
+      transition: color .2s, background .2s;
+    }
+    .qr-modal-close:hover { color: var(--c-primary); background: var(--c-bg-muted); }
+    .qr-modal-titulo {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--c-primary);
+      margin: 0 0 6px;
+    }
+    .qr-modal-url {
+      font-size: 0.72rem;
+      color: var(--c-text-muted);
+      margin: 0 0 24px;
+      word-break: break-all;
+    }
+    .qr-canvas-wrap {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 24px;
+    }
+    /* qrcodejs inyecta canvas + img — los centramos sin padding extra */
+    .qr-canvas-wrap > div { display: inline-block; }
+    .qr-canvas-wrap img,
+    .qr-canvas-wrap canvas { display: block; }
+
+    .qr-modal-actions {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       EMPTY STATE
+       ───────────────────────────────────────────────────────── */
+    .recursos-empty {
+      text-align: center;
+      padding: 80px 20px;
+      color: var(--c-text-muted);
+      font-size: 0.9rem;
+      display: none;
+    }
+    .recursos-empty.visible { display: block; }
+    .recursos-empty code {
+      font-size: 0.85em;
+      color: var(--c-text-heading);
+      background: var(--c-bg-muted);
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       TOAST (copiar enlace)
+       ───────────────────────────────────────────────────────── */
+    .copy-toast {
+      position: fixed;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%) translateY(20px);
+      background: var(--c-primary);
+      color: #fff;
+      font-size: 0.80rem;
+      font-weight: 600;
+      padding: 10px 22px;
+      border-radius: 100px;
+      opacity: 0;
+      transition: opacity .25s, transform .25s;
+      pointer-events: none;
+      z-index: 2000;
+      white-space: nowrap;
+      box-shadow: 0 8px 24px rgba(20,23,45,0.18);
+    }
+    .copy-toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* ─────────────────────────────────────────────────────────
+       RESPONSIVE
+       ───────────────────────────────────────────────────────── */
+    @media (max-width: 640px) {
+      .recursos-toolbar {
+        grid-template-columns: 1fr;
+      }
+      .recursos-count { justify-self: start; }
+      .recursos-search { max-width: none; }
+      .qr-modal { padding: 32px 24px 24px; }
+    }
+  </style>
+
+  <PageHero
+    image="/assets/imagenes/image_heroprincipal.webp"
+    title="Recursos de<br>marca"
+    subtitle="Logos, flyers y documentos oficiales de INACONS para uso interno y comunicaciones."
+    current="Recursos"
+    size="sm"
+  />
+
+  <section class="sec sec--white">
+    <div class="container">
+
+      <!-- Intro -->
+      <div class="recursos-intro" data-aos="fade-up">
+        <p>
+          Los archivos publicados aquí son propiedad de INACONS S.R.L. Su uso debe respetar la
+          <a href="/documentos">normativa corporativa</a> y las versiones vigentes de cada pieza.
+        </p>
+      </div>
+
+      <!-- Toolbar: búsqueda + contador + filtros -->
+      <div class="recursos-toolbar" data-aos="fade-up">
+        <div class="recursos-search">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.3-4.3"/>
+          </svg>
+          <input
+            type="search"
+            id="recursosSearch"
+            placeholder="Buscar recurso…"
+            aria-label="Buscar recurso por nombre"
+            autocomplete="off"
+          />
+        </div>
+        <p class="recursos-count" id="recursosCount">
+          <strong>{recursos.length}</strong> {recursos.length === 1 ? 'recurso disponible' : 'recursos disponibles'}
+        </p>
+
+        <div class="filtros" role="tablist" aria-label="Filtrar por categoría">
+          {CATEGORIAS.map(cat => (
+            <button
+              type="button"
+              role="tab"
+              class={`filtro-btn${cat.id === 'todos' ? ' active' : ''}`}
+              data-filtro={cat.id}
+              aria-selected={cat.id === 'todos' ? 'true' : 'false'}
+            >
+              {cat.label}
+              <span class="filtro-num">{conteo[cat.id] ?? 0}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <!-- Grid -->
+      <div class="recursos-grid" id="recursosGrid">
+        {recursos.map((r: Recurso) => {
+          const formato   = (r.data.formato || '').toUpperCase();
+          const esVisual  = PREVIEW_FORMATS.has(formato);
+          const enlaceQr  = r.data.qr ? `${QR_BASE}?c=${encodeURIComponent(r.data.qr)}` : '';
+          const enlaceCopy =
+            enlaceQr ||
+            (r.data.imagen.startsWith('http')
+              ? r.data.imagen
+              : new URL(r.data.imagen, `${SITE_ORIGIN}/`).href);
+          return (
+            <article
+              class="recurso-card"
+              data-categoria={r.data.categoria}
+              data-titulo={r.data.titulo.toLowerCase()}
+            >
+              <div class:list={['recurso-preview', { 'recurso-preview--file': !esVisual }]}>
+                {esVisual ? (
+                  <img src={r.data.imagen} alt={`Vista previa: ${r.data.titulo}`} loading="lazy" decoding="async" />
+                ) : (
+                  <span class="recurso-file-badge" aria-hidden="true">{formato || 'FILE'}</span>
+                )}
+                <span class="recurso-badge">{BADGE_LABEL[r.data.categoria]}</span>
+              </div>
+
+              <div class="recurso-body">
+                <p class="recurso-titulo">{r.data.titulo}</p>
+                <p class="recurso-meta">
+                  {formato || '—'}
+                  {r.data.dimensiones && ` · ${r.data.dimensiones}`}
+                </p>
+
+                <div class="recurso-actions">
+                  <a
+                    href={r.data.imagen}
+                    download
+                    class="recurso-btn recurso-btn--primary"
+                    title={`Descargar ${r.data.titulo}`}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+                    Descargar
+                  </a>
+
+                  {r.data.qr && (
+                    <button
+                      type="button"
+                      class="recurso-btn recurso-btn--outline js-open-qr"
+                      data-qr-titulo={r.data.titulo}
+                      data-qr-url={enlaceQr}
+                      data-qr-imagen={r.data.imagen}
+                    >
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="5" height="5" x="3" y="3" rx="1"/><rect width="5" height="5" x="16" y="3" rx="1"/><rect width="5" height="5" x="3" y="16" rx="1"/><path d="M21 16h-3a2 2 0 0 0-2 2v3"/><path d="M21 21v.01"/><path d="M12 7v3a2 2 0 0 1-2 2H7"/><path d="M3 12h.01"/><path d="M12 3h.01"/><path d="M12 16v.01"/><path d="M16 12h1"/><path d="M21 12v.01"/><path d="M12 21v-1"/></svg>
+                      Ver QR
+                    </button>
+                  )}
+
+                  <button
+                    type="button"
+                    class="recurso-btn recurso-btn--ghost js-copy-link"
+                    data-url={enlaceCopy}
+                    title="Copiar enlace"
+                    aria-label={`Copiar enlace de ${r.data.titulo}`}
+                  >
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"/><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"/></svg>
+                    Copiar
+                  </button>
+                </div>
+              </div>
+            </article>
+          );
+        })}
+      </div>
+
+      <p class="recursos-empty" id="recursosEmpty">
+        {recursos.length === 0
+          ? <>Aún no hay recursos publicados. Agrega archivos Markdown en <code>src/content/recursos/</code>.</>
+          : <>No se encontraron recursos con los filtros actuales.</>}
+      </p>
+
+    </div>
+  </section>
+
+  <!-- ───── MODAL QR ───── -->
+  <div class="qr-modal-overlay" id="qrModal" role="dialog" aria-modal="true" aria-labelledby="qrModalTitulo" hidden>
+    <div class="qr-modal">
+      <button type="button" class="qr-modal-close" id="qrModalClose" aria-label="Cerrar">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+      </button>
+      <p class="qr-modal-titulo" id="qrModalTitulo"></p>
+      <p class="qr-modal-url" id="qrModalUrl"></p>
+      <div class="qr-canvas-wrap" id="qrCanvasWrap"></div>
+      <div class="qr-modal-actions">
+        <button type="button" class="recurso-btn recurso-btn--primary" id="qrDescargar">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Descargar QR
+        </button>
+        <button type="button" class="recurso-btn recurso-btn--outline" id="qrDescargarFlyer">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+          Descargar Flyer
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ───── TOAST ───── -->
+  <div class="copy-toast" id="copyToast" role="status" aria-live="polite">¡Enlace copiado!</div>
+
+  <!-- ───── QR Library (qrcodejs) ───── -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" is:inline></script>
+
+  <!-- ───── Lógica de la página ───── -->
+  <script is:inline>
+    (function () {
+      // ── ELEMENTOS ─────────────────────────────────────────
+      const grid       = document.getElementById('recursosGrid');
+      const empty      = document.getElementById('recursosEmpty');
+      const countEl    = document.getElementById('recursosCount');
+      const searchEl   = document.getElementById('recursosSearch');
+      const filtros    = document.querySelectorAll('.filtro-btn');
+      const cards      = document.querySelectorAll('.recurso-card');
+
+      const modal      = document.getElementById('qrModal');
+      const modalClose = document.getElementById('qrModalClose');
+      const modalTit   = document.getElementById('qrModalTitulo');
+      const modalUrl   = document.getElementById('qrModalUrl');
+      const qrWrap     = document.getElementById('qrCanvasWrap');
+      const btnDlQr    = document.getElementById('qrDescargar');
+      const btnDlFlyer = document.getElementById('qrDescargarFlyer');
+
+      const toast      = document.getElementById('copyToast');
+
+      if (!grid || !empty || !modal || !modalClose || !modalTit || !modalUrl || !qrWrap || !btnDlQr || !btnDlFlyer) {
+        return;
+      }
+
+      // ── ESTADO ────────────────────────────────────────────
+      let categoriaActual = 'todos';
+      let queryActual     = '';
+      let imagenActual    = '';
+      let lastFocused     = null;
+      let toastTimer      = 0;
+
+      // ── FILTRADO + BÚSQUEDA ───────────────────────────────
+      function aplicarFiltros() {
+        let visibles = 0;
+        cards.forEach((card) => {
+          const cat   = card.getAttribute('data-categoria') || '';
+          const tit   = card.getAttribute('data-titulo')    || '';
+          const okCat = categoriaActual === 'todos' || cat === categoriaActual;
+          const okQry = !queryActual || tit.indexOf(queryActual) !== -1;
+          const ok    = okCat && okQry;
+          card.classList.toggle('is-hidden', !ok);
+          if (ok) visibles++;
+        });
+
+        empty.classList.toggle('visible', visibles === 0);
+        if (countEl) {
+          countEl.innerHTML =
+            '<strong>' + visibles + '</strong> ' +
+            (visibles === 1 ? 'recurso disponible' : 'recursos disponibles');
+        }
+      }
+
+      filtros.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          filtros.forEach((b) => {
+            b.classList.remove('active');
+            b.setAttribute('aria-selected', 'false');
+          });
+          btn.classList.add('active');
+          btn.setAttribute('aria-selected', 'true');
+          categoriaActual = btn.getAttribute('data-filtro') || 'todos';
+          aplicarFiltros();
+        });
+      });
+
+      if (searchEl) {
+        searchEl.addEventListener('input', () => {
+          queryActual = (searchEl.value || '').trim().toLowerCase();
+          aplicarFiltros();
+        });
+      }
+
+      // Cálculo inicial (cubre el caso de 0 recursos en build).
+      aplicarFiltros();
+
+      // ── MODAL QR ──────────────────────────────────────────
+      function abrirModal(titulo, url, imagen) {
+        modalTit.textContent = titulo;
+        modalUrl.textContent = url;
+        imagenActual         = imagen;
+
+        qrWrap.innerHTML = '';
+        const QR = window.QRCode;
+        if (typeof QR === 'function') {
+          try {
+            const opts = {
+              text:       url,
+              width:      220,
+              height:     220,
+              colorDark:  '#14172d',
+              colorLight: '#ffffff',
+            };
+            if (QR.CorrectLevel) opts.correctLevel = QR.CorrectLevel.H;
+            new QR(qrWrap, opts);
+          } catch (e) {
+            qrWrap.textContent = 'No se pudo generar el código QR.';
+          }
+        } else {
+          qrWrap.textContent = 'No se pudo cargar el generador de QR.';
+        }
+
+        lastFocused = document.activeElement;
+        modal.hidden = false;
+        modal.classList.add('open');
+        document.body.style.overflow = 'hidden';
+        // Foco accesible al cerrar.
+        setTimeout(() => modalClose && modalClose.focus(), 0);
+      }
+
+      function cerrarModal() {
+        modal.classList.remove('open');
+        modal.hidden = true;
+        document.body.style.overflow = '';
+        if (lastFocused && typeof lastFocused.focus === 'function') {
+          lastFocused.focus();
+        }
+      }
+
+      document.querySelectorAll('.js-open-qr').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          abrirModal(
+            btn.getAttribute('data-qr-titulo')  || '',
+            btn.getAttribute('data-qr-url')     || '',
+            btn.getAttribute('data-qr-imagen')  || ''
+          );
+        });
+      });
+
+      modalClose.addEventListener('click', cerrarModal);
+      modal.addEventListener('click', (e) => { if (e.target === modal) cerrarModal(); });
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.classList.contains('open')) cerrarModal();
+      });
+
+      // ── DESCARGAR QR (lee la imagen ya generada por qrcodejs) ──
+      btnDlQr.addEventListener('click', () => {
+        const img    = qrWrap.querySelector('img');
+        const canvas = qrWrap.querySelector('canvas');
+        let dataUrl = img && img.src ? img.src : null;
+        if (!dataUrl && canvas) {
+          try {
+            dataUrl = canvas.toDataURL('image/png');
+          } catch (e) {
+            dataUrl = null;
+          }
+        }
+        if (!dataUrl) {
+          window.alert('No hay imagen de QR para descargar. Comprueba la conexión o recarga la página.');
+          return;
+        }
+        const a = document.createElement('a');
+        a.download = 'qr-' + (modalTit.textContent || 'inacons')
+          .toLowerCase()
+          .replace(/[^\w\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-') + '.png';
+        a.href = dataUrl;
+        a.click();
+      });
+
+      // ── DESCARGAR FLYER (imagen de origen) ────────────────
+      btnDlFlyer.addEventListener('click', () => {
+        if (!imagenActual) return;
+        const a = document.createElement('a');
+        a.href     = imagenActual;
+        a.download = imagenActual.split('/').pop() || 'flyer';
+        a.click();
+      });
+
+      // ── COPIAR ENLACE ─────────────────────────────────────
+      document.querySelectorAll('.js-copy-link').forEach((btn) => {
+        btn.addEventListener('click', async () => {
+          const url = btn.getAttribute('data-url') || '';
+          try {
+            await navigator.clipboard.writeText(url);
+          } catch {
+            try {
+              const ta = document.createElement('textarea');
+              ta.value = url;
+              ta.style.position = 'fixed';
+              ta.style.opacity  = '0';
+              document.body.appendChild(ta);
+              ta.select();
+              document.execCommand('copy');
+              document.body.removeChild(ta);
+            } catch (e2) {
+              window.alert('No se pudo copiar el enlace.');
+              return;
+            }
+          }
+          if (!toast) return;
+          clearTimeout(toastTimer);
+          toast.classList.add('show');
+          toastTimer = window.setTimeout(() => toast.classList.remove('show'), 2200);
+        });
+      });
+    })();
+  </script>
+</BaseLayout>

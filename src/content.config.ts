@@ -27,4 +27,17 @@ const proyectos = defineCollection({
   }),
 });
 
-export const collections = { servicios, proyectos };
+const recursos = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: 'src/content/recursos' }),
+  schema: z.object({
+    titulo:      z.string(),
+    categoria:   z.enum(['logo', 'flyer-impreso', 'flyer-digital', 'documento']),
+    imagen:      z.string(),                  // URL pública del archivo o preview (p. ej. /assets/recursos/…)
+    formato:     z.string().default('PNG'),
+    dimensiones: z.string().optional(),
+    qr:          z.string().optional(),
+    orden:       z.number().optional(),
+  }),
+});
+
+export const collections = { servicios, proyectos, recursos };

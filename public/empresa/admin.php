@@ -149,12 +149,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (!$codigo || !$url) {
                 $msg = '❌ El código y la URL son obligatorios.';
             } elseif (!in_array($host, ALLOWED_REDIRECT_HOSTS, true)) {
-                $msg = '❌ Dominio no permitido: <strong>' . htmlspecialchars($host, ENT_QUOTES, 'UTF-8') . '</strong>. Agrega el dominio a config.php si es legítimo.';
+                $msg = '❌ Dominio no permitido: ' . $host . '. Agrega el dominio a config.php si es legítimo.';
             } else {
                 if ($action === 'crear') {
                     $stmt = $pdo->prepare('INSERT INTO qr_links (codigo, url_destino, descripcion) VALUES (:c, :u, :d)');
                     $stmt->execute([':c' => $codigo, ':u' => $url, ':d' => $desc]);
-                    $msg = '✅ QR <strong>' . htmlspecialchars($codigo, ENT_QUOTES, 'UTF-8') . '</strong> creado correctamente.';
+                    $msg = '✅ QR "' . $codigo . '" creado correctamente.';
                 } else {
                     $id = (int)($_POST['id'] ?? 0);
                     $stmt = $pdo->prepare('UPDATE qr_links SET url_destino=:u, descripcion=:d WHERE id=:id');
@@ -252,7 +252,7 @@ tr:hover td { background: #fafbfc; }
 <div class="container">
 
 <?php if ($msg): ?>
-<div class="msg"><?= $msg ?></div>
+<div class="msg"><?= htmlspecialchars($msg, ENT_QUOTES | ENT_HTML5, 'UTF-8') ?></div>
 <?php endif; ?>
 
 <!-- FORMULARIO CREAR -->
