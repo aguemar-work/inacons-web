@@ -69,22 +69,37 @@ import PageHero from '../components/PageHero.astro';
           <div class="mvv-block" data-aos="fade-up" data-aos-delay="80">
             <p class="mvv-label">Misión</p>
             <h3 class="mvv-title">Generamos valor en cada obra</h3>
-            <p class="mvv-desc">Fortalecernos responsablemente generando valor de nuestros servicios de ingeniería y construcción, cumpliendo nuestro propósito a todos nuestros clientes y socios estratégicos.</p>
+            <p class="mvv-desc">Desarrollar servicios de ingeniería y construcción en obras civiles, infraestructura y electromecánicas, transformando la calidad de vida y asegurando la continuidad operativa de nuestros clientes, con innovación y desarrollo responsable.</p>
           </div>
           <div class="mvv-block" data-aos="fade-up" data-aos-delay="160">
             <p class="mvv-label">Visión</p>
             <h3 class="mvv-title">Referentes en Latinoamérica</h3>
-            <p class="mvv-desc">Ser reconocidos como la empresa de ingeniería y construcción sólida capaz de diversificar nuestros servicios en la región Latinoamérica, comprometidos con el desarrollo sostenible de todos nuestros clientes y socios estratégicos.</p>
+            <p class="mvv-desc">Ser reconocidos como una empresa sólida en ingeniería y construcción, con capacidad para diversificar sus servicios y consolidar su presencia en Latinoamérica para 2030.</p>
           </div>
           <div class="mvv-block" data-aos="fade-up" data-aos-delay="240">
             <p class="mvv-label">Valores</p>
             <h3 class="mvv-title">Lo que nos define como equipo</h3>
             <div class="valores-list">
-              <span class="valor-tag">Confianza</span>
-              <span class="valor-tag">Innovación</span>
-              <span class="valor-tag">Trascender</span>
-              <span class="valor-tag">Lealtad</span>
-              <span class="valor-tag">Identificación</span>
+              <div class="valor-item">
+                <span class="valor-name">Confianza</span>
+                <p class="valor-desc">El pilar de nuestras relaciones.</p>
+              </div>
+              <div class="valor-item">
+                <span class="valor-name">Innovación</span>
+                <p class="valor-desc">Evolución constante en procesos y tecnología.</p>
+              </div>
+              <div class="valor-item">
+                <span class="valor-name">Trascender</span>
+                <p class="valor-desc">Dejar un legado de calidad en cada obra.</p>
+              </div>
+              <div class="valor-item">
+                <span class="valor-name">Lealtad</span>
+                <p class="valor-desc">Compromiso recíproco a largo plazo.</p>
+              </div>
+              <div class="valor-item">
+                <span class="valor-name">Identidad</span>
+                <p class="valor-desc">Comprometerse con los objetivos de la organización, asumiéndolos como propios.</p>
+              </div>
             </div>
           </div>
         </div>
@@ -188,8 +203,12 @@ import PageHero from '../components/PageHero.astro';
   .mvv-grid {
     display: grid;
     grid-template-columns: 1.1fr 0.9fr;
-    gap: 80px;
+    gap: 48px;
     align-items: start;
+  }
+
+  .mvv-grid > div:first-child > .sh {
+    margin-bottom: 28px;
   }
 
   .mvv-img {
@@ -200,7 +219,7 @@ import PageHero from '../components/PageHero.astro';
   .mvv-img img { width: 100%; height: 100%; object-fit: cover; }
 
   .mvv-block {
-    padding: 28px 0;
+    padding: 16px 0;
     border-top: 1px solid var(--c-border-light);
   }
 
@@ -209,24 +228,44 @@ import PageHero from '../components/PageHero.astro';
   .mvv-label {
     font-size: 0.65rem; font-weight: 700; letter-spacing: 2.5px;
     text-transform: uppercase; color: var(--c-secondary);
-    margin-bottom: 10px;
+    margin-bottom: 6px;
   }
 
   .mvv-title {
     font-size: 1.15rem; font-weight: 700;
-    color: var(--c-text-heading); margin-bottom: 12px;
+    color: var(--c-text-heading); margin-bottom: 8px;
   }
 
-  .mvv-desc { font-size: 0.88rem; color: var(--c-text-muted); line-height: 1.8; }
+  .mvv-desc { font-size: 0.88rem; color: var(--c-text-muted); line-height: 1.75; }
 
-  .valores-list { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+  .valores-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px 14px;
+    margin-top: 10px;
+  }
 
-  .valor-tag {
-    display: inline-block;
-    padding: 6px 16px;
-    font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;
-    border: 1.5px solid var(--c-border);
-    color: var(--c-text-heading); border-radius: 2px;
+  .valor-item {
+    padding: 10px 12px;
+    border: 1px solid var(--c-border-light);
+    border-radius: 2px;
+    background: var(--c-bg-white);
+  }
+
+  .valor-name {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.4px;
+    color: var(--c-text-heading);
+    margin-bottom: 4px;
+  }
+
+  .valor-desc {
+    font-size: 0.82rem;
+    color: var(--c-text-muted);
+    line-height: 1.55;
+    margin: 0;
   }
 
   /* Pilares */
@@ -267,8 +306,9 @@ import PageHero from '../components/PageHero.astro';
   @media (max-width: 1023px) {
     .about-intro-grid { grid-template-columns: 1fr; gap: 40px; }
     .about-intro-img { height: 360px; }
-    .mvv-grid { grid-template-columns: 1fr; }
+    .mvv-grid { grid-template-columns: 1fr; gap: 40px; }
     .mvv-img { position: relative; top: 0; height: 280px; }
+    .valores-list { grid-template-columns: 1fr; }
     .pillars-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
