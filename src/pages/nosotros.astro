@@ -110,8 +110,27 @@ import PageHero from '../components/PageHero.astro';
     </div>
   </section>
 
+  <!-- VIDEO INSTITUCIONAL -->
+  <section class="sec sec--white video-inst-sec" aria-labelledby="video-institucional-heading">
+    <div class="container">
+      <div class="sh sh--center sh--narrow video-inst-sh" data-aos="fade-up">
+        <p class="sh-label">INACONS</p>
+        <h2 id="video-institucional-heading" class="sh-title">Video institucional</h2>
+      </div>
+      <div class="contenedor-video" data-aos="fade-up" data-aos-delay="80">
+        <iframe
+          src="https://www.youtube-nocookie.com/embed/mlrYw3IldXs?modestbranding=1&rel=0"
+          title="Video institucional INACONS"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+          allowfullscreen
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </section>
+
   <!-- POR QUÉ INACONS -->
-  <section class="sec sec--white">
+  <section class="sec sec--muted">
     <div class="container">
       <div class="sh sh--center sh--medium" data-aos="fade-up">
         <p class="sh-label">Lo que nos diferencia</p>
@@ -266,6 +285,35 @@ import PageHero from '../components/PageHero.astro';
     color: var(--c-text-muted);
     line-height: 1.55;
     margin: 0;
+  }
+
+  /* Video institucional */
+  .video-inst-sec .video-inst-sh {
+    margin-bottom: 28px;
+  }
+
+  .video-inst-sec .video-inst-sh .sh-title {
+    margin-bottom: 0;
+  }
+
+  .contenedor-video {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    overflow: hidden;
+    max-width: 900px;
+    margin: 0 auto;
+    border-radius: 2px;
+    box-shadow: 0 12px 40px rgba(20, 23, 45, 0.08);
+  }
+
+  .contenedor-video iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
   }
 
   /* Pilares */
