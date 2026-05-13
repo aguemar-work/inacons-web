@@ -1,7 +1,7 @@
 ---
 titulo: Canal de Comunicación — Flyer A4
 categoria: flyer-impreso
-imagen: /assets/recursos/canal-comunicacion-a4.png
+imagen: /assets/recursos/flyer_a4_canaldecomunicaciones.png
 formato: PNG
 dimensiones: 2480×3508px
 qr: canal-etico
