@@ -57,7 +57,7 @@ const destacados = proyectos
     }
     .home-hero h1 {
       font-family: 'Montserrat', sans-serif;
-      font-size: clamp(2rem, 4.5vw, 4rem);
+      font-size: clamp(1.75rem, 8vw, 2.4rem);
       font-weight: 700;
       text-transform: uppercase;
       line-height: 1.15;
@@ -250,20 +250,17 @@ const destacados = proyectos
     }
 
     /* Desktop — lado a lado */
-    @media (min-width: 768px) {
+    @media (min-width: 769px) {
       .info-slide-inner {
-        flex-direction: row;
-        height: 420px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        height: 480px;
       }
-
       .info-slide-image {
-        width: 45%;
         height: 100%;
       }
-
       .info-slide-content {
-        width: 55%;
-        padding: 48px 40px;
+        padding: 40px;
       }
     }
 
@@ -305,17 +302,102 @@ const destacados = proyectos
     .cta-band .sh-title { color: #fff; }
     .cta-band .sh-desc  { color: rgba(255,255,255,0.62); }
 
+    /* ── CTA ACTIONS ── */
+    .cta-actions {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 40px;
+    }
+
     /* ── RESPONSIVE ── */
     @media (max-width: 768px) {
-      .hero-content { padding: 0 20px; }
-      .home-hero h1 { text-align: center; }
-      .hero-content > p { text-align: center; margin-left: auto; margin-right: auto; max-width: 100%; }
-      .hero-actions { justify-content: center; }
+      /* Hero */
+      .home-hero {
+        min-height: 100svh;
+        align-items: center;
+      }
+      .hero-content {
+        padding: 80px 20px 160px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+      }
+      .home-hero h1 {
+        text-align: center;
+        font-size: clamp(1.1rem, 5vw, 1.6rem);
+        width: 100%;
+        padding: 0 4px;
+      }
+      .hero-line {
+        flex-wrap: nowrap;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        overflow: hidden;
+      }
+      .word.fixed,
+      .word.highlight {
+        white-space: nowrap;
+        font-size: inherit;
+      }
+      .hero-content > p {
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+        max-width: 100%;
+      }
+      .hero-actions {
+        justify-content: center;
+        flex-direction: column;
+        width: 100%;
+      }
+      .hero-actions .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      /* About */
       .about-grid { grid-template-columns: 1fr; gap: 36px; }
       .about-img-wrap { height: 280px; }
       .about-img-wrap::before { display: none; }
+
+      /* Regional */
       .regional-grid { grid-template-columns: 1fr; gap: 36px; }
+
+      /* Indicadores */
       .indicators-container { grid-template-columns: repeat(2, 1fr); }
+
+      /* Carrusel */
+      .info-slide-inner {
+        height: auto;
+        min-height: 0;
+      }
+      .info-slide-image {
+        height: 200px;
+      }
+      .info-slide-content {
+        padding: 28px 24px;
+      }
+      .info-carousel-title {
+        font-size: 1.3rem;
+      }
+      .info-carousel-description {
+        font-size: 0.875rem;
+      }
+
+      /* CTA */
+      .cta-actions {
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+      }
+      .cta-actions .btn {
+        width: 100%;
+        max-width: 320px;
+        justify-content: center;
+      }
     }
   </style>
 
@@ -536,7 +618,7 @@ const destacados = proyectos
         <h2 class="sh-title">¿Listo para iniciar su proyecto?</h2>
         <p class="sh-desc">Nuestro equipo de expertos está listo para asesorarlo en soluciones de ingeniería y construcción a medida.</p>
       </div>
-      <div style="display:flex; gap:16px; flex-wrap:wrap; justify-content:center; margin-top:40px;" data-aos="fade-up">
+      <div class="cta-actions" data-aos="fade-up">
         <a href="/contacto" class="btn btn-primary btn-lg">
           Contáctenos <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </a>
