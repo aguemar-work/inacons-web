@@ -9,7 +9,7 @@ galeria:
   - /assets/imagenes/about_team.webp
   - /assets/imagenes/home_about.webp
 destacado: true
-orden: 1
+orden: 2
 ---
 
 ## Descripción

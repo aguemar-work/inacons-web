@@ -37,6 +37,13 @@ const ogImageURL      = `https://inacons.com.pe${ogImage}`;
 
     <!-- Canonical -->
     <link rel="canonical" href={canonicalURL} />
+    <!-- Preload imagen LCP (hero principal) -->
+    <link
+      rel="preload"
+      as="image"
+      href="/assets/imagenes/image_heroprincipal.webp"
+      fetchpriority="high"
+    />
 
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -164,8 +171,8 @@ const ogImageURL      = `https://inacons.com.pe${ogImage}`;
     <header class="header with-topbar" id="header">
       <div class="container">
         <a href="/" class="logo">
-          <img src="/assets/imagenes/logos/logo_inacons_white.svg" alt="INACONS" class="logo-white" />
-          <img src="/assets/imagenes/logos/logo_inacons.svg" alt="INACONS" class="logo-color" />
+          <img src="/assets/imagenes/logos/logo_inacons_white.svg" alt="INACONS" class="logo-white" width="160" height="40" />
+<img src="/assets/imagenes/logos/logo_inacons.svg" alt="INACONS" class="logo-color" width="160" height="40" />
         </a>
         <nav class="nav">
           <ul>
@@ -253,7 +260,7 @@ const ogImageURL      = `https://inacons.com.pe${ogImage}`;
         <div class="footer-content">
           <div class="footer-section footer-brand">
             <div class="footer-logo">
-              <img src="/assets/imagenes/logos/logo_inacons_white.svg" alt="INACONS" />
+              <img src="/assets/imagenes/logos/logo_inacons_white.svg" alt="INACONS" width="160" height="40" />
             </div>
             <p class="footer-slogan">
               CONSTRUIMOS CONFIANZA<br />
