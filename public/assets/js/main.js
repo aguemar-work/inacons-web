@@ -127,12 +127,14 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function open() {
       menu.classList.add('active');
+      document.body.classList.add('menu-open');
       toggle.setAttribute('aria-expanded', 'true');
       resetDropdowns();
     }
 
     function shut() {
       menu.classList.remove('active');
+      document.body.classList.remove('menu-open');
       toggle.setAttribute('aria-expanded', 'false');
       resetDropdowns();
     }
