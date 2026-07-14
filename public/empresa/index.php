@@ -39,7 +39,7 @@ try {
     if ($row) {
         // Validar que el destino sea un dominio permitido (open redirect protection)
         $parsed = parse_url($row['url_destino']);
-        $host   = $parsed['host'] ?? '';
+        $host   = strtolower($parsed['host'] ?? '');
 
         if (!in_array($host, ALLOWED_REDIRECT_HOSTS, true)) {
             header('HTTP/1.0 403 Forbidden');
@@ -50,7 +50,8 @@ try {
         $pdo->prepare('UPDATE qr_links SET scan_count = scan_count + 1 WHERE codigo = :c')
             ->execute([':c' => $codigo]);
 
-        header('Location: ' . $row['url_destino'], true, 301);
+            header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+            header('Location: ' . $row['url_destino'], true, 302);
         exit;
 
     } else {

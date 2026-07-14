@@ -3,7 +3,7 @@ titulo: Habilitación Urbana Pameras 7A
 ubicacion: Castilla, Piura
 categoria: Obras Civiles
 año: 2025
-imagen: /assets/imagenes/hero_project.png
+imagen: /assets/imagenes/hero_project.webp
 galeria:
   - /assets/imagenes/about_section.webp
   - /assets/imagenes/about_team.webp

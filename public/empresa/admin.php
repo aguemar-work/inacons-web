@@ -5,7 +5,19 @@
 
 require_once __DIR__ . '/config.php';
 
+// Cookie de sesión endurecida (debe ir ANTES de session_start)
+session_set_cookie_params([
+  'lifetime' => 0,
+  'path'     => '/empresa/',
+  'secure'   => true,    // solo viaja por HTTPS
+  'httponly' => true,    // inaccesible desde JavaScript
+  'samesite' => 'Strict',
+]);
 session_start();
+
+header('X-Frame-Options: DENY');
+header('X-Content-Type-Options: nosniff');
+header('Referrer-Policy: no-referrer');
 
 // ── RATE LIMITING (máx. 5 intentos de login por IP en 10 min) ─
 function check_rate_limit(): bool {
@@ -15,21 +27,31 @@ function check_rate_limit(): bool {
     $window  = 600; // 10 minutos
     $max     = 5;
 
-    $data = [];
-    if (file_exists($file)) {
-        $data = json_decode(file_get_contents($file), true) ?: [];
+    $fh = fopen($file, 'c+');
+    if ($fh === false) {
+        return true; // no se pudo abrir el archivo de control; no bloquear el login por esto
     }
+    flock($fh, LOCK_EX);
+
+    $raw  = stream_get_contents($fh);
+    $data = $raw ? (json_decode($raw, true) ?: []) : [];
 
     // Filtrar intentos fuera de la ventana
-    $data = array_filter($data, fn($t) => ($now - $t) < $window);
+    $data = array_values(array_filter($data, fn($t) => ($now - $t) < $window));
 
-    if (count($data) >= $max) {
-        return false; // Bloqueado
+    $allowed = count($data) < $max;
+    if ($allowed) {
+        $data[] = $now;
     }
 
-    $data[] = $now;
-    file_put_contents($file, json_encode(array_values($data)));
-    return true;
+    ftruncate($fh, 0);
+    rewind($fh);
+    fwrite($fh, json_encode($data));
+    fflush($fh);
+    flock($fh, LOCK_UN);
+    fclose($fh);
+
+    return $allowed;
 }
 
 // ── CSRF TOKEN ────────────────────────────────────────────────
@@ -63,10 +85,15 @@ if (($_POST['action'] ?? '') === 'login') {
 
 if (($_POST['action'] ?? '') === 'logout') {
     if (verify_csrf()) {
+        $_SESSION = [];
+        if (ini_get('session.use_cookies')) {
+            $p = session_get_cookie_params();
+            setcookie(session_name(), '', time() - 42000, $p['path'], $p['domain'], $p['secure'], $p['httponly']);
+        }
         session_destroy();
-        header('Location: admin.php');
-        exit;
     }
+    header('Location: admin.php');
+    exit;
 }
 
 // ── PANTALLA DE LOGIN ─────────────────────────────────────────
@@ -144,7 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Validar URL
             $parsed = parse_url($url);
-            $host   = $parsed['host'] ?? '';
+            $host   = strtolower($parsed['host'] ?? '');
 
             if (!$codigo || !$url) {
                 $msg = '❌ El código y la URL son obligatorios.';
@@ -187,7 +214,9 @@ $links = $pdo->query('SELECT * FROM qr_links ORDER BY creado_en DESC')->fetchAll
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Panel QR — INACONS</title>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"
+  integrity="sha512-CNgIRecGo7nphbeZ04Sc13ka07paqdeTu0WR1IM4kNcpmBAUSHSQX0FslNhTDadL4O5SAGapGt4FodqL8My0mA=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 body { font-family: 'Segoe UI', sans-serif; background: #f0f4f8; color: #333; }

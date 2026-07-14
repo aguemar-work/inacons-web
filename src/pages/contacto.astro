@@ -157,12 +157,15 @@ import BaseLayout from '../layouts/BaseLayout.astro';
       .form-row { grid-template-columns: 1fr; }
       .channel-features { grid-template-columns: 1fr; }
       .contact-form-wrap { padding: 28px 20px; }
+      .form-submit {
+    margin-bottom: 16px;
+  }
     }
   </style>
 
   <!-- HERO -->
   <section class="page-hero page-hero--sm">
-    <div class="page-hero-bg" style="background-image: url('/assets/imagenes/home_hero.webp')"></div>
+    <div class="page-hero-bg" style="background-image: url('/assets/imagenes/image_heroprincipal.webp')"></div>
     <div class="page-hero-overlay"></div>
     <div class="page-hero-content" data-aos="fade-up" data-aos-duration="800">
       <nav class="breadcrumb">
@@ -295,6 +298,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
                 <label for="message">Mensaje *</label>
                 <textarea id="message" name="message" class="form-textarea" placeholder="Describe tu proyecto o consulta..." required></textarea>
               </div>
+              <input type="text" name="company_url" tabindex="-1" autocomplete="off"
+       aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0;">
               <button type="submit" class="form-submit" id="formSubmit">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
                 Enviar Mensaje
@@ -398,6 +403,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 
     form?.addEventListener('submit', (e) => {
       e.preventDefault();
+      if (String(new FormData(form).get('company_url') || '').trim() !== '') return;
       if (!form.checkValidity()) {
         form.reportValidity();
         return;

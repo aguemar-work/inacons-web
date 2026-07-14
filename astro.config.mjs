@@ -7,8 +7,8 @@ export default defineConfig({
   site: 'https://inacons.com.pe',
   integrations: [
     sitemap({
-      // /recursos es un brand hub interno (noindex) — no debe aparecer en el sitemap público.
-      filter: (page) => !/\/recursos\/?$/i.test(page),
+      // /recursos y /formulario son internos (noindex) — no deben aparecer en el sitemap público.
+      filter: (page) => !/\/(recursos|formulario)\/?/i.test(page),
     }),
   ],
 });

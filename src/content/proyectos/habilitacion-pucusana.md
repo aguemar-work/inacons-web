@@ -3,7 +3,7 @@ titulo: Habilitación Urbana Pucusana
 ubicacion: Pucusana, Lima
 categoria: Obras Civiles
 año: 2023
-imagen: /assets/imagenes/hero_project.png
+imagen: /assets/imagenes/image_obra_civiles.webp
 galeria:
   - /assets/imagenes/about_section.webp
   - /assets/imagenes/about_team.webp

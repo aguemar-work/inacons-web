@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
- 
+Disallow: /formulario/
+Disallow: /recursos/
+
 Sitemap: https://inacons.com.pe/sitemap-index.xml
